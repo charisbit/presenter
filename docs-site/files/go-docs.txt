@@ -1,0 +1,1045 @@
+Module information:
+intelligent-presenter-backend
+
+=== Package Documentation ===
+
+=== ./cmd/main.go ===
+// Package main provides the entry point for the intelligent presenter backend server.
+// This server provides APIs for slide generation, authentication, and integration
+// with Backlog project management and various AI services for content creation.
+//
+// The server supports:
+//   - OAuth authentication with Backlog
+//   - Slide generation using AI providers (OpenAI or AWS Bedrock)
+//   - Real-time communication via WebSockets
+//   - MCP (Model Context Protocol) integration for external services
+//   - Text-to-speech functionality for slide narration
+//
+// Environment variables are used for configuration, with .env file support
+// for development environments.
+package main
+
+import (
+	"context"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"intelligent-presenter-backend/internal/api"
+	"intelligent-presenter-backend/pkg/config"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+)
+
+// main initializes and starts the intelligent presenter backend server.
+// It handles environment configuration, server setup, graceful shutdown,
+// and provides the main HTTP API endpoints for the application.
+//
+// The startup process includes:
+//   1. Loading environment variables from .env file or system environment
+//   2. Configuring the Gin web framework and middleware
+//   3. Setting up CORS for cross-origin requests
+//   4. Registering API routes and handlers
+//   5. Starting the HTTP server with graceful shutdown support
+//
+// The server listens for SIGINT and SIGTERM signals for clean shutdown.
+func main() {
+	// Load environment variables from .env file if available
+	// Falls back to system environment variables if .env is not found
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using environment variables")
+	}
+
+=== ./tests/slide_service_test.go ===
+package tests
+
+import (
+	"testing"
+
+	"intelligent-presenter-backend/internal/models"
+	"intelligent-presenter-backend/internal/services"
+	"intelligent-presenter-backend/pkg/config"
+)
+
+// TestSlideService_NewSlideService tests the creation of a new SlideService instance
+func TestSlideService_NewSlideService(t *testing.T) {
+	cfg := &config.Config{
+		OpenAIAPIKey: "test-key",
+		AIProvider:   "openai",
+		MCPBacklogURL: "http://localhost:3001",
+	}
+
+	service := services.NewSlideService(cfg)
+	if service == nil {
+		t.Fatal("Expected SlideService instance, got nil")
+	}
+}
+
+// TestSlideTheme_Constants tests that all slide theme constants are defined correctly
+func TestSlideTheme_Constants(t *testing.T) {
+	themes := []models.SlideTheme{
+		models.ThemeProjectOverview,
+		models.ThemeProjectProgress,
+		models.ThemeIssueManagement,
+		models.ThemeRiskAnalysis,
+		models.ThemeTeamCollaboration,
+		models.ThemeDocumentManagement,
+		models.ThemeCodebaseActivity,
+		models.ThemeNotifications,
+		models.ThemePredictiveAnalysis,
+		models.ThemeSummaryPlan,
+	}
+
+	expectedThemes := map[models.SlideTheme]string{
+		models.ThemeProjectOverview:     "project_overview",
+		models.ThemeProjectProgress:     "project_progress",
+		models.ThemeIssueManagement:     "issue_management",
+		models.ThemeRiskAnalysis:        "risk_analysis",
+		models.ThemeTeamCollaboration:   "team_collaboration",
+		models.ThemeDocumentManagement:  "document_management",
+		models.ThemeCodebaseActivity:    "codebase_activity",
+		models.ThemeNotifications:       "notifications",
+		models.ThemePredictiveAnalysis:  "predictive_analysis",
+		models.ThemeSummaryPlan:         "summary_plan",
+
+=== ./tests/mcp_service_test.go ===
+package tests
+
+import (
+	"testing"
+
+	"intelligent-presenter-backend/internal/services"
+	"intelligent-presenter-backend/pkg/config"
+)
+
+// TestMCPService_NewMCPService tests the creation of a new MCPService instance
+func TestMCPService_NewMCPService(t *testing.T) {
+	cfg := &config.Config{
+		MCPBacklogURL: "http://localhost:3001",
+		MCPSpeechURL:  "http://localhost:3002",
+	}
+
+	service := services.NewMCPService(cfg)
+	if service == nil {
+		t.Fatal("Expected MCPService instance, got nil")
+	}
+}
+
+// TestMCPService_ProjectDataValidation tests project data validation
+func TestMCPService_ProjectDataValidation(t *testing.T) {
+	testCases := []struct {
+		name      string
+		projectID string
+		token     string
+		valid     bool
+	}{
+		{
+			name:      "Valid project ID and token",
+			projectID: "123",
+			token:     "valid-token",
+			valid:     true,
+		},
+		{
+			name:      "Valid project key and token",
+			projectID: "TEST_PROJECT",
+			token:     "valid-token",
+			valid:     true,
+		},
+		{
+			name:      "Empty project ID",
+			projectID: "",
+			token:     "valid-token",
+			valid:     false,
+		},
+		{
+			name:      "Empty token",
+
+=== ./internal/auth/middleware.go ===
+// Package auth provides authentication middleware and JWT token handling
+// for the intelligent presenter backend. It includes middleware functions
+// for HTTP and WebSocket authentication, token validation, and token generation.
+package auth
+
+import (
+	"net/http"
+	"strings"
+	"time"
+
+	"intelligent-presenter-backend/internal/models"
+	"intelligent-presenter-backend/pkg/config"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+// RequireAuth is a middleware that requires JWT authentication for HTTP requests.
+// It extracts the JWT token from the Authorization header, validates it,
+// and stores user information in the Gin context for use by handlers.
+//
+// The middleware expects the Authorization header to be in the format:
+// "Bearer <jwt_token>"
+//
+// If authentication fails, it returns a 401 Unauthorized response and aborts the request.
+// If successful, it sets "userID" and "backlogToken" in the context.
+func RequireAuth(cfg *config.Config) gin.HandlerFunc {
+	return gin.HandlerFunc(func(c *gin.Context) {
+		token := extractToken(c)
+		if token == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Authorization token required",
+			})
+			c.Abort()
+			return
+		}
+
+		claims, err := validateToken(token, cfg.JWTSecret)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Invalid or expired token",
+			})
+			c.Abort()
+			return
+		}
+
+		// Store user information in context
+		c.Set("userID", claims.UserID)
+		c.Set("backlogToken", claims.BacklogToken)
+		c.Next()
+
+=== ./internal/mcp/client.go ===
+// Package mcp provides Model Context Protocol (MCP) client implementation
+// for communicating with MCP servers. This package enables the intelligent
+// presenter to interact with external data sources and services through
+// the standardized MCP protocol.
+//
+// The MCP client supports JSON-RPC 2.0 communication with proper session
+// management, tool invocation, resource access, and prompt handling.
+package mcp
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
+
+// MCPClient represents an MCP client for communicating with MCP servers.
+// It manages the HTTP connection, session state, and JSON-RPC protocol
+// communication with remote MCP servers.
+type MCPClient struct {
+	serverURL string       // Base URL of the MCP server
+	client    *http.Client // HTTP client for network requests
+	sessionID string       // Session identifier for stateful connections
+}
+
+// MCPRequest represents an MCP JSON-RPC request structure.
+// It follows the JSON-RPC 2.0 specification with MCP-specific extensions
+// for method calls and parameter passing.
+type MCPRequest struct {
+	JSONRPC string      `json:"jsonrpc"`        // JSON-RPC version (always "2.0")
+	ID      interface{} `json:"id"`             // Request identifier for response matching
+	Method  string      `json:"method"`         // MCP method name to invoke
+	Params  interface{} `json:"params,omitempty"` // Method parameters (optional)
+}
+
+// MCPResponse represents an MCP JSON-RPC response structure.
+// It contains either a successful result or error information
+// according to the JSON-RPC 2.0 specification.
+type MCPResponse struct {
+	JSONRPC string          `json:"jsonrpc"`          // JSON-RPC version (always "2.0")
+	ID      interface{}     `json:"id"`               // Request identifier matching the request
+	Result  json.RawMessage `json:"result,omitempty"` // Successful result data (optional)
+	Error   *MCPError       `json:"error,omitempty"`  // Error information (optional)
+}
+
+// MCPError represents an MCP error response.
+// It provides structured error information including error codes,
+// human-readable messages, and optional additional data.
+
+=== ./internal/models/slide.go ===
+// Package models defines the data structures and types used throughout
+// the intelligent presenter application. This includes slide content models,
+// request/response structures, and WebSocket message types.
+package models
+
+import (
+	"encoding/json"
+	"fmt"
+	"time"
+)
+
+// SlideTheme represents different types of slides that can be generated
+// based on various aspects of project management and analysis.
+// Each theme focuses on specific data types and presentation styles.
+type SlideTheme string
+
+const (
+	// ThemeProjectOverview generates slides with basic project information,
+	// including project name, objectives, timeline, and team structure
+	ThemeProjectOverview SlideTheme = "project_overview"
+	
+	// ThemeProjectProgress creates slides showing completion rates,
+	// milestone achievements, and timeline progress
+	ThemeProjectProgress SlideTheme = "project_progress"
+	
+	// ThemeIssueManagement focuses on issue tracking, resolution rates,
+	// and priority distribution across the project
+	ThemeIssueManagement SlideTheme = "issue_management"
+	
+	// ThemeRiskAnalysis presents identified risks, their impact levels,
+	// and mitigation strategies
+	ThemeRiskAnalysis SlideTheme = "risk_analysis"
+	
+	// ThemeTeamCollaboration showcases team member activities,
+	// collaboration metrics, and communication patterns
+	ThemeTeamCollaboration SlideTheme = "team_collaboration"
+	
+	// ThemeDocumentManagement covers documentation status,
+	// knowledge sharing, and information accessibility
+	ThemeDocumentManagement SlideTheme = "document_management"
+	
+	// ThemeCodebaseActivity displays development metrics,
+	// commit patterns, and code quality indicators
+	ThemeCodebaseActivity SlideTheme = "codebase_activity"
+	
+	// ThemeNotifications presents communication efficiency,
+	// notification handling, and information flow
+	ThemeNotifications SlideTheme = "notifications"
+	
+	// ThemePredictiveAnalysis shows forecasts, trend analysis,
+
+=== ./internal/models/auth.go ===
+// Package models defines authentication-related data structures for the intelligent presenter.
+// It includes OAuth state management, token handling, user information, and JWT claims
+// used throughout the authentication flow with Backlog integration.
+package models
+
+import (
+	"time"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+// OAuthState represents OAuth state information used during the authentication flow.
+// It stores temporary state data to prevent CSRF attacks and manage redirect flows.
+type OAuthState struct {
+	State       string    `json:"state"`       // Random state value for CSRF protection
+	RedirectURL string    `json:"redirectUrl"` // Frontend URL to redirect after authentication
+	CreatedAt   time.Time `json:"createdAt"`   // Timestamp when state was created
+}
+
+// TokenInfo represents OAuth token information received from Backlog API.
+// It contains all token-related data needed for API authentication and refresh.
+type TokenInfo struct {
+	AccessToken  string    `json:"accessToken"`  // OAuth2 access token for API calls
+	RefreshToken string    `json:"refreshToken"` // OAuth2 refresh token for token renewal
+	TokenType    string    `json:"tokenType"`    // Token type (typically "Bearer")
+	ExpiresAt    time.Time `json:"expiresAt"`    // Token expiration timestamp
+	Scope        string    `json:"scope"`        // OAuth2 scopes granted to the token
+}
+
+// UserInfo represents Backlog user information retrieved from the API.
+// It contains user profile data and account details from Backlog.
+type UserInfo struct {
+	ID           int    `json:"id"`           // Backlog user ID (numeric)
+	UserID       string `json:"userId"`       // Backlog user ID (string identifier)
+	Name         string `json:"name"`         // User's display name
+	RoleType     int    `json:"roleType"`     // User's role type in Backlog
+	Lang         string `json:"lang"`         // User's preferred language setting
+	MailAddress  string `json:"mailAddress"`  // User's email address
+	NulabAccount struct {
+		NulabID  string `json:"nulabId"`  // Nulab account ID
+		Name     string `json:"name"`     // Nulab account name
+		UniqueID string `json:"uniqueId"` // Unique identifier for Nulab account
+	} `json:"nulabAccount"` // Nested Nulab account information
+}
+
+// AuthResponse represents the authentication response sent to the client.
+// It includes the JWT token, user information, and token expiration details.
+type AuthResponse struct {
+	Token     string    `json:"token"`     // JWT token for authenticated requests
+	UserInfo  UserInfo  `json:"userInfo"`  // User profile information
+	ExpiresAt time.Time `json:"expiresAt"` // JWT token expiration timestamp
+
+=== ./internal/api/routes.go ===
+// Package api provides HTTP route configuration for the intelligent presenter backend.
+// It sets up all API endpoints, middleware, and handler mappings for the application,
+// including authentication routes, project data routes, slide generation, and WebSocket endpoints.
+package api
+
+import (
+	"intelligent-presenter-backend/internal/api/handlers"
+	"intelligent-presenter-backend/internal/auth"
+	"intelligent-presenter-backend/pkg/config"
+
+	"github.com/gin-gonic/gin"
+)
+
+// SetupRoutes configures all HTTP routes and WebSocket endpoints for the application.
+// It initializes handlers, sets up middleware, and organizes routes into logical groups
+// with appropriate authentication requirements.
+//
+// Route organization:
+//   - /api/v1/auth/* - Authentication and OAuth flow
+//   - /api/v1/projects/* - Project data from Backlog (authenticated)
+//   - /api/v1/slides/* - Slide generation endpoints (authenticated)
+//   - /api/v1/speech/* - Speech synthesis endpoints (authenticated)
+//   - /ws/slides/* - WebSocket endpoint for real-time slide delivery
+//   - /cache/* - Static audio file serving
+//
+// Parameters:
+//   - router: the Gin engine instance to configure
+//   - cfg: application configuration containing service URLs and credentials
+func SetupRoutes(router *gin.Engine, cfg *config.Config) {
+	// Initialize handlers
+	authHandler := handlers.NewAuthHandler(cfg)
+	slideHandler := handlers.NewSlideHandler(cfg)
+	mcpHandler := handlers.NewMCPHandler(cfg)
+
+	// API v1 routes
+	v1 := router.Group("/api/v1")
+	{
+		// Authentication routes
+		authGroup := v1.Group("/auth")
+		{
+			authGroup.GET("/login", authHandler.InitiateOAuth)
+			authGroup.GET("/callback", authHandler.HandleCallback)
+			authGroup.POST("/refresh", authHandler.RefreshToken)
+			authGroup.GET("/me", auth.RequireAuth(cfg), authHandler.GetUserInfo)
+			authGroup.POST("/logout", authHandler.Logout)
+		}
+
+		// Project data routes (requires authentication)
+		projectGroup := v1.Group("/projects", auth.RequireAuth(cfg))
+		{
+
+=== ./internal/api/handlers/slide.go ===
+package handlers
+
+import (
+	"fmt"
+	"net/http"
+	"sync"
+
+	"intelligent-presenter-backend/internal/models"
+	"intelligent-presenter-backend/internal/services"
+	"intelligent-presenter-backend/pkg/config"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
+)
+
+type SlideHandler struct {
+	config         *config.Config
+	slideService   *services.SlideService
+	activeSlides   map[string]*SlideSession
+	slidesMutex    sync.RWMutex
+	wsUpgrader     websocket.Upgrader
+}
+
+type SlideSession struct {
+	ID          string
+	ProjectID   models.ProjectID
+	Themes      []models.SlideTheme
+	Language    string
+	Status      string
+	Connections map[*websocket.Conn]bool
+	ConnMutex   sync.RWMutex
+	// Store generated slides data
+	Slides      []*models.SlideContent    `json:"slides"`
+	Narrations  []*models.SlideNarration  `json:"narrations"`
+	AudioFiles  []*models.SlideAudio      `json:"audioFiles"`
+}
+
+func NewSlideHandler(cfg *config.Config) *SlideHandler {
+	return &SlideHandler{
+		config:       cfg,
+		slideService: services.NewSlideService(cfg),
+		activeSlides: make(map[string]*SlideSession),
+		wsUpgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool {
+				// In production, implement proper origin checking
+				return true
+			},
+		},
+	}
+
+=== ./internal/api/handlers/auth.go ===
+package handlers
+
+import (
+	"context"
+	"crypto/rand"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strings"
+	"sync"
+	"time"
+
+	"intelligent-presenter-backend/internal/auth"
+	"intelligent-presenter-backend/internal/models"
+	"intelligent-presenter-backend/pkg/config"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/oauth2"
+)
+
+type StateStore struct {
+	states map[string]time.Time
+	mutex  sync.RWMutex
+}
+
+func NewStateStore() *StateStore {
+	store := &StateStore{
+		states: make(map[string]time.Time),
+	}
+	
+	// Cleanup expired states in background goroutine
+	go store.cleanup()
+	
+	return store
+}
+
+func (s *StateStore) Set(state string) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	s.states[state] = time.Now().Add(10 * time.Minute) // 10 minutes expiration
+}
+
+func (s *StateStore) Validate(state string) bool {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+	expiry, exists := s.states[state]
+	return exists && time.Now().Before(expiry)
+}
+
+=== ./internal/api/handlers/mcp.go ===
+package handlers
+
+import (
+	"fmt"
+	"net/http"
+
+	"intelligent-presenter-backend/internal/services"
+	"intelligent-presenter-backend/pkg/config"
+
+	"github.com/gin-gonic/gin"
+)
+
+type MCPHandler struct {
+	config     *config.Config
+	mcpService *services.MCPService
+}
+
+func NewMCPHandler(cfg *config.Config) *MCPHandler {
+	return &MCPHandler{
+		config:     cfg,
+		mcpService: services.NewMCPService(cfg),
+	}
+}
+
+func (h *MCPHandler) GetProjects(c *gin.Context) {
+	backlogToken := c.GetString("backlogToken")
+
+	projects, err := h.mcpService.GetProjects(backlogToken)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to get projects",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, projects)
+}
+
+func (h *MCPHandler) GetProjectOverview(c *gin.Context) {
+	projectID := c.Param("projectId")
+	backlogToken := c.GetString("backlogToken")
+
+	overview, err := h.mcpService.GetProjectOverview(projectID, backlogToken)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to get project overview",
+		})
+		return
+	}
+
+
+=== ./internal/services/slide.go ===
+// Package services provides core business logic services for the intelligent presenter application.
+// This package includes services for slide generation, content processing, and AI integration.
+package services
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
+	"intelligent-presenter-backend/internal/models"
+	"intelligent-presenter-backend/pkg/config"
+)
+
+// SlideService provides functionality for generating presentation slides
+// using AI-powered content generation and project data from Backlog.
+// It integrates with multiple AI providers (OpenAI, AWS Bedrock) and
+// supports various slide themes and content types.
+type SlideService struct {
+	config            *config.Config        // Application configuration
+	mcpService        *MCPService          // MCP service for Backlog data access
+	bedrockService    *BedrockService      // AWS Bedrock service (custom implementation)
+	bedrockSDKService *BedrockSDKService   // AWS Bedrock service (SDK implementation)
+}
+
+// NewSlideService creates a new instance of SlideService with the provided configuration.
+// It initializes connections to AI services and MCP services for data retrieval.
+// The service automatically falls back between different AI providers if one fails.
+func NewSlideService(cfg *config.Config) *SlideService {
+	// Try to create AWS SDK service, fallback to custom implementation if it fails
+	var bedrockSDKService *BedrockSDKService
+	if cfg.AWSAccessKeyID != "" && cfg.AWSSecretAccessKey != "" {
+		if sdkService, err := NewBedrockSDKService(cfg); err == nil {
+			bedrockSDKService = sdkService
+		} else {
+			fmt.Printf("Failed to create Bedrock SDK service, falling back to custom implementation: %v\n", err)
+		}
+	}
+
+	return &SlideService{
+		config:         cfg,
+		mcpService:     NewMCPService(cfg),
+		bedrockService: NewBedrockService(cfg),
+		bedrockSDKService: bedrockSDKService,
+	}
+}
+
+// GenerateSlideContent creates a complete slide with both markdown and HTML content
+
+=== ./internal/services/mcp_service.go ===
+package services
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"time"
+
+	"intelligent-presenter-backend/pkg/config"
+)
+
+type MCPService struct {
+	config          *config.Config
+	backlogWrapper  *BacklogMCPWrapper
+	speechService   *SpeechService
+}
+
+func NewMCPService(cfg *config.Config) *MCPService {
+	return &MCPService{
+		config:         cfg,
+		backlogWrapper: NewBacklogMCPWrapper(cfg),
+		speechService:  NewSpeechService(cfg),
+	}
+}
+
+func (s *MCPService) Start() error {
+	return s.backlogWrapper.Start()
+}
+
+func (s *MCPService) Stop() error {
+	return s.backlogWrapper.Stop()
+}
+
+// Backlog data retrieval methods using MCP tools
+
+func (s *MCPService) GetProjects(backlogToken string) (interface{}, error) {
+	// Use HTTP bridge to call MCP server
+	return s.callBacklogToolHTTP("get_project_list", map[string]interface{}{
+		"all": false,
+	}, backlogToken)
+}
+
+func (s *MCPService) GetProjectOverview(projectID, backlogToken string) (interface{}, error) {
+	projectData := make(map[string]interface{})
+	
+	// Get project details using HTTP bridge
+	project, err := s.callBacklogToolHTTP("get_project", map[string]interface{}{
+
+=== ./internal/services/backlog.go ===
+// Package services provides business logic services for the intelligent presenter.
+// This file specifically handles Backlog project management integration through
+// the Model Context Protocol (MCP) for retrieving project data and analytics.
+package services
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+
+	"intelligent-presenter-backend/internal/mcp"
+	"intelligent-presenter-backend/pkg/config"
+)
+
+// BacklogService handles Backlog-specific operations using MCP (Model Context Protocol).
+// It provides an abstraction layer for accessing Backlog project management data
+// including projects, issues, users, activities, and repository information.
+// All operations are performed through MCP client calls to the Backlog MCP server.
+type BacklogService struct {
+	mcpClient *mcp.MCPClient  // MCP client for communicating with Backlog MCP server
+	config    *config.Config  // Application configuration including MCP server URLs
+}
+
+// NewBacklogService creates a new Backlog service instance with MCP client initialization.
+// It establishes a connection to the Backlog MCP server using the configured URL.
+//
+// Parameters:
+//   - cfg: Application configuration containing Backlog MCP server URL
+//
+// Returns a configured BacklogService ready for use.
+func NewBacklogService(cfg *config.Config) *BacklogService {
+	mcpClient := mcp.NewMCPClient(cfg.MCPBacklogURL)
+	
+	return &BacklogService{
+		mcpClient: mcpClient,
+		config:    cfg,
+	}
+}
+
+// Initialize initializes the Backlog MCP client with proper handshake.
+// This method establishes the MCP protocol connection with the Backlog server
+// and sends the required initialization sequence.
+//
+// Parameters:
+//   - ctx: Context for request timeout and cancellation
+//
+// Returns an error if the initialization handshake fails.
+func (s *BacklogService) Initialize(ctx context.Context) error {
+	clientInfo := map[string]interface{}{
+		"name":    "intelligent-presenter-backend",
+
+=== ./internal/services/aws_signer.go ===
+package services
+
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"fmt"
+	"net/http"
+	"net/url"
+	"sort"
+	"strings"
+	"time"
+)
+
+type AWSV4Signer struct {
+	AccessKey string
+	SecretKey string
+	Region    string
+	Service   string
+}
+
+func (s *AWSV4Signer) SignRequest(req *http.Request, payload []byte) error {
+	now := time.Now().UTC()
+	
+	// Set required headers
+	req.Header.Set("X-Amz-Date", now.Format("20060102T150405Z"))
+	req.Header.Set("Host", req.URL.Host)
+	
+	// Create canonical request
+	canonicalRequest := s.createCanonicalRequest(req, payload)
+	
+	// Create string to sign
+	stringToSign := s.createStringToSign(now, canonicalRequest)
+	
+	// Calculate signature
+	signature := s.calculateSignature(now, stringToSign)
+	
+	// Set authorization header
+	authHeader := s.createAuthorizationHeader(now, signature)
+	req.Header.Set("Authorization", authHeader)
+	
+	return nil
+}
+
+func (s *AWSV4Signer) createCanonicalRequest(req *http.Request, payload []byte) string {
+	// HTTP method
+	method := req.Method
+	
+	// Canonical URI
+	uri := req.URL.Path
+	if uri == "" {
+
+=== ./internal/services/bedrock.go ===
+package services
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+
+	"intelligent-presenter-backend/pkg/config"
+)
+
+type BedrockService struct {
+	config *config.Config
+	client *http.Client
+}
+
+type BedrockRequest struct {
+	Prompt            string  `json:"prompt"`
+	MaxTokensToSample int     `json:"max_tokens_to_sample"`
+	Temperature       float64 `json:"temperature"`
+	TopP              float64 `json:"top_p"`
+	TopK              int     `json:"top_k"`
+	StopSequences     []string `json:"stop_sequences"`
+}
+
+type BedrockResponse struct {
+	Completion string `json:"completion"`
+	StopReason string `json:"stop_reason"`
+}
+
+type ClaudeMessageRequest struct {
+	Model         string    `json:"model"`
+	MaxTokens     int       `json:"max_tokens"`
+	Temperature   float64   `json:"temperature"`
+	Messages      []Message `json:"messages"`
+	AnthropicVersion string `json:"anthropic_version"`
+}
+
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type ClaudeMessageResponse struct {
+	Content []ContentBlock `json:"content"`
+	ID      string         `json:"id"`
+	Model   string         `json:"model"`
+	Role    string         `json:"role"`
+	Type    string         `json:"type"`
+
+=== ./internal/services/speech.go ===
+package services
+
+import (
+	"bytes"
+	"crypto/md5"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"os"
+	"path/filepath"
+	"time"
+
+	"intelligent-presenter-backend/pkg/config"
+)
+
+type SpeechService struct {
+	config    *config.Config
+	cacheDir  string
+	client    *http.Client
+}
+
+type SpeechRequest struct {
+	Text      string `json:"text"`
+	Language  string `json:"language"`
+	Voice     string `json:"voice"`
+	Streaming bool   `json:"streaming"`
+}
+
+type SpeechResponse struct {
+	AudioURL  string        `json:"audioUrl"`
+	Duration  time.Duration `json:"duration"`
+	Language  string        `json:"language"`
+	Voice     string        `json:"voice"`
+	CacheHit  bool          `json:"cacheHit"`
+	RequestID string        `json:"requestId"`
+}
+
+func NewSpeechService(cfg *config.Config) *SpeechService {
+	cacheDir := "./cache/audio"
+	os.MkdirAll(cacheDir, 0755)
+	
+	return &SpeechService{
+		config:   cfg,
+		cacheDir: cacheDir,
+		client: &http.Client{
+			Timeout: 30 * time.Second,
+		},
+	}
+}
+
+
+=== ./internal/services/backlog_mcp_wrapper.go ===
+package services
+
+import (
+	"bufio"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os/exec"
+	"sync"
+	"sync/atomic"
+	"time"
+
+	"intelligent-presenter-backend/pkg/config"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+)
+
+// BacklogMCPWrapper wraps the stdio Backlog MCP Server as an HTTP service
+type BacklogMCPWrapper struct {
+	config      *config.Config
+	process     *exec.Cmd
+	stdin       io.WriteCloser
+	stdout      io.ReadCloser
+	scanner     *bufio.Scanner
+	requestID   int64
+	sessions    map[string]*MCPSession
+	sessionMux  sync.RWMutex
+	ctx         context.Context
+	cancel      context.CancelFunc
+	isRunning   bool
+}
+
+type MCPSession struct {
+	ID        string
+	responses map[int64]chan *MCPResponse
+	respMutex sync.RWMutex
+}
+
+type MCPRequest struct {
+	JSONRPC string      `json:"jsonrpc"`
+	ID      int64       `json:"id"`
+	Method  string      `json:"method"`
+	Params  interface{} `json:"params,omitempty"`
+}
+
+type MCPResponse struct {
+
+=== ./internal/services/bedrock_sdk.go ===
+package services
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	"intelligent-presenter-backend/pkg/config"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime"
+)
+
+type BedrockSDKService struct {
+	config *config.Config
+	client *bedrockruntime.Client
+}
+
+// Types are shared with bedrock.go - no need to redeclare them here
+
+func NewBedrockSDKService(cfg *config.Config) (*BedrockSDKService, error) {
+	// Create AWS config with explicit credentials
+	awsCfg, err := awsconfig.LoadDefaultConfig(context.TODO(),
+		awsconfig.WithRegion(cfg.AWSRegion),
+		awsconfig.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+			cfg.AWSAccessKeyID,
+			cfg.AWSSecretAccessKey,
+			"", // no session token
+		)),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load AWS config: %w", err)
+	}
+
+	// Create Bedrock Runtime client
+	client := bedrockruntime.NewFromConfig(awsCfg)
+
+	return &BedrockSDKService{
+		config: cfg,
+		client: client,
+	}, nil
+}
+
+func (s *BedrockSDKService) GenerateText(prompt string) (string, error) {
+	// Use Claude-3 Messages API format for Bedrock (without model field)
+	request := map[string]interface{}{
+		"max_tokens":         1500,
+
+=== ./pkg/config/config.go ===
+// Package config provides configuration management for the intelligent presenter backend.
+// It loads configuration values from environment variables with sensible defaults
+// for development and production deployments.
+package config
+
+import (
+	"os"
+	"strings"
+)
+
+// Config holds all configuration values for the intelligent presenter backend.
+// It includes settings for server operation, external service integrations,
+// authentication, and security configurations.
+type Config struct {
+	// Port specifies the HTTP server port number
+	Port string
+	// Environment indicates the deployment environment (debug, release, production)
+	Environment string
+	
+	// Backlog OAuth configuration for integrating with Backlog project management
+	BacklogDomain       string // Backlog space domain (e.g., "yourspace.backlog.jp")
+	BacklogClientID     string // OAuth2 client ID for Backlog API
+	BacklogClientSecret string // OAuth2 client secret for Backlog API
+	OAuthRedirectURL    string // OAuth2 callback URL for authentication flow
+	
+	// AI Provider configuration for slide content generation
+	AIProvider   string // AI service to use: "openai" or "bedrock"
+	OpenAIAPIKey string // API key for OpenAI services
+	
+	// AWS Bedrock configuration for AI content generation
+	AWSRegion          string // AWS region for Bedrock service
+	AWSAccessKeyID     string // AWS access key for authentication
+	AWSSecretAccessKey string // AWS secret key for authentication
+	BedrockModelID     string // Bedrock model identifier for content generation
+	
+	// MCP Server URLs for Model Context Protocol integration
+	MCPBacklogURL string // URL of the Backlog MCP server
+	MCPSpeechURL  string // URL of the Speech MCP server
+	
+	// JWT configuration for session management
+	JWTSecret string // Secret key for JWT token signing and verification
+
+    // Frontend base URL for OAuth redirects and CORS
+    FrontendBaseURL string // Base URL of the frontend application
+
+    // CORS configuration for cross-origin request handling
+    CORSOrigins []string // List of allowed origins for CORS requests
+}
+
+// Load creates a new Config instance by reading environment variables.
+

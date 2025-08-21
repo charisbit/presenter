@@ -1,0 +1,4 @@
+Sitemap: http://localhost:8000/sitemapindex.xml
+
+User-Agent: *
+Host: localhost:8000

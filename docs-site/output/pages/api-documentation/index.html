@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#
+" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Complete API reference for the Intelligent Presenter">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Documentation | Intelligent Presenter Documentation</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="http://localhost:8000/pages/api-documentation/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Intelligent Presenter Team">
+<meta property="og:site_name" content="Intelligent Presenter Documentation">
+<meta property="og:title" content="API Documentation">
+<meta property="og:url" content="http://localhost:8000/pages/api-documentation/">
+<meta property="og:description" content="Complete API reference for the Intelligent Presenter">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-08-18T00:00:00Z">
+<meta property="article:tag" content="api">
+<meta property="article:tag" content="documentation">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-expand-md static-top mb-4
+navbar-dark
+bg-dark
+"><div class="container">
+<!-- This keeps the margins nice -->
+        <a class="navbar-brand" href="../../">
+
+            <span id="blog-title">Intelligent Presenter Documentation</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="bs-navbar">
+            <ul class="navbar-nav mr-auto">
+<li class="nav-item">
+<a href="../../" class="nav-link">Home</a>
+                </li>
+<li class="nav-item active">
+<a href="." class="nav-link">API Documentation <span class="sr-only">(active)</span></a>
+                </li>
+<li class="nav-item">
+<a href="../backend-docs/" class="nav-link">Backend (Go)</a>
+                </li>
+<li class="nav-item">
+<a href="../frontend-docs/" class="nav-link">Frontend (TypeScript)</a>
+                </li>
+<li class="nav-item">
+<a href="../deployment/" class="nav-link">Deployment</a>
+                </li>
+<li class="nav-item">
+<a href="../development/" class="nav-link">Development</a>
+
+                
+            </li>
+</ul>
+<ul class="navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        
+        
+        
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">API Documentation</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <h2>API Documentation</h2>
+<p>This page provides comprehensive API documentation for the Intelligent Presenter backend services.</p>
+<h3>REST API Endpoints</h3>
+<h4>Authentication Endpoints</h4>
+<h5><code>GET /api/v1/auth/login</code></h5>
+<p>Initiates OAuth2 authentication flow with Backlog.</p>
+<p><strong>Parameters:</strong>
+- <code>redirectUrl</code> (query): Frontend URL to redirect after authentication</p>
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"authUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://yourspace.backlog.jp/OAuth2AccessRequest.action?..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"random-state-string"</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5><code>GET /api/v1/auth/callback</code></h5>
+<p>Handles OAuth2 callback from Backlog.</p>
+<p><strong>Parameters:</strong>
+- <code>code</code> (query): Authorization code from Backlog
+- <code>state</code> (query): State parameter for CSRF protection</p>
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jwt-token"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User Name"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user@example.com"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5><code>POST /api/v1/auth/refresh</code></h5>
+<p>Refreshes authentication token.</p>
+<p><strong>Headers:</strong>
+- <code>Authorization: Bearer &lt;token&gt;</code></p>
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"new-jwt-token"</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5><code>POST /api/v1/auth/logout</code></h5>
+<p>Logs out the current user.</p>
+<p><strong>Headers:</strong>
+- <code>Authorization: Bearer &lt;token&gt;</code></p>
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Logged out successfully"</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>Project Endpoints</h4>
+<h5><code>GET /api/v1/projects</code></h5>
+<p>Retrieves list of accessible projects.</p>
+<p><strong>Headers:</strong>
+- <code>Authorization: Bearer &lt;token&gt;</code></p>
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"projects"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Project Name"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PROJ"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Project description"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5><code>GET /api/v1/projects/{projectId}</code></h5>
+<p>Retrieves detailed project information.</p>
+<p><strong>Headers:</strong>
+- <code>Authorization: Bearer &lt;token&gt;</code></p>
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"project"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Project Name"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Detailed description"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"startDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-01-01"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"dueDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-12-31"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"progress"</span><span class="p">:</span><span class="w"> </span><span class="mf">65.5</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>Slide Generation Endpoints</h4>
+<h5><code>POST /api/v1/slides/generate</code></h5>
+<p>Generates presentation slides for a project.</p>
+<p><strong>Headers:</strong>
+- <code>Authorization: Bearer &lt;token&gt;</code></p>
+<p><strong>Request Body:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"projectId"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"themes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"project_overview"</span><span class="p">,</span><span class="w"> </span><span class="s2">"project_progress"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"includeAudio"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"sessionId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"slide-session-uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"processing"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Slide generation started"</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5><code>GET /api/v1/slides/{sessionId}/status</code></h5>
+<p>Checks slide generation status.</p>
+<p><strong>Headers:</strong>
+- <code>Authorization: Bearer &lt;token&gt;</code></p>
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"sessionId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"slide-session-uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"completed"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"progress"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"slidesGenerated"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"downloadUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/v1/slides/session-uuid/download"</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>Speech Synthesis Endpoints</h4>
+<h5><code>POST /api/v1/speech/synthesize</code></h5>
+<p>Synthesizes speech from text.</p>
+<p><strong>Headers:</strong>
+- <code>Authorization: Bearer &lt;token&gt;</code></p>
+<p><strong>Request Body:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Text to synthesize"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"voice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"default"</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Response:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"audioUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/cache/audio/filename.wav"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"wav"</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>WebSocket API</h3>
+<h4>Slide Generation WebSocket</h4>
+<h5>Connection</h5>
+<div class="code"><pre class="code literal-block">wss://localhost:8080/ws/slides/{sessionId}
+</pre></div>
+
+<p><strong>Headers:</strong>
+- <code>Authorization: Bearer &lt;token&gt;</code></p>
+<h5>Message Types</h5>
+<p><strong>Slide Generated:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"slide_generated"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"slideIndex"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Project Overview"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"# Project Overview\n\nProject content..."</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"audioUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/cache/audio/slide-0.wav"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Progress Update:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"progress_update"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"currentSlide"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"totalSlides"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"percentage"</span><span class="p">:</span><span class="w"> </span><span class="mf">37.5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Generating slide content..."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Generation Complete:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"generation_complete"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"sessionId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"session-uuid"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"totalSlides"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"downloadUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/v1/slides/session-uuid/download"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Error:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"error"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Error description"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ERROR_CODE"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>Data Models</h3>
+<h4>Project</h4>
+<div class="code"><pre class="code literal-block"><span class="kd">interface</span><span class="w"> </span><span class="nx">Project</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">startDate?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">dueDate?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">progress?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>SlideContent</h4>
+<div class="code"><pre class="code literal-block"><span class="kd">interface</span><span class="w"> </span><span class="nx">SlideContent</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">theme</span><span class="o">:</span><span class="w"> </span><span class="kt">SlideTheme</span>
+<span class="w">  </span><span class="nx">slideIndex</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="nx">audioUrl?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">generatedAt</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>SlideTheme</h4>
+<div class="code"><pre class="code literal-block"><span class="kr">type</span><span class="w"> </span><span class="nx">SlideTheme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">"project_overview"</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">"project_progress"</span><span class="w"> </span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">"issue_management"</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">"risk_analysis"</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">"team_overview"</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">"document_management"</span>
+</pre></div>
+
+<h3>Error Codes</h3>
+<table>
+<thead><tr>
+<th>Code</th>
+<th>Description</th>
+<th>HTTP Status</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>AUTH_REQUIRED</code></td>
+<td>Authentication required</td>
+<td>401</td>
+</tr>
+<tr>
+<td><code>AUTH_INVALID</code></td>
+<td>Invalid authentication token</td>
+<td>401</td>
+</tr>
+<tr>
+<td><code>AUTH_EXPIRED</code></td>
+<td>Authentication token expired</td>
+<td>401</td>
+</tr>
+<tr>
+<td><code>FORBIDDEN</code></td>
+<td>Insufficient permissions</td>
+<td>403</td>
+</tr>
+<tr>
+<td><code>PROJECT_NOT_FOUND</code></td>
+<td>Project not found</td>
+<td>404</td>
+</tr>
+<tr>
+<td><code>INVALID_REQUEST</code></td>
+<td>Invalid request data</td>
+<td>400</td>
+</tr>
+<tr>
+<td><code>GENERATION_FAILED</code></td>
+<td>Slide generation failed</td>
+<td>500</td>
+</tr>
+<tr>
+<td><code>SERVICE_UNAVAILABLE</code></td>
+<td>External service unavailable</td>
+<td>503</td>
+</tr>
+</tbody>
+</table>
+<h3>Rate Limiting</h3>
+<ul>
+<li>
+<strong>Authentication endpoints</strong>: 10 requests per minute per IP</li>
+<li>
+<strong>Project endpoints</strong>: 100 requests per minute per user</li>
+<li>
+<strong>Slide generation</strong>: 5 concurrent sessions per user</li>
+<li>
+<strong>Speech synthesis</strong>: 50 requests per minute per user</li>
+</ul>
+<h3>Response Headers</h3>
+<p>All API responses include:
+- <code>Content-Type: application/json</code>
+- <code>X-Request-ID: unique-request-identifier</code>
+- <code>X-Rate-Limit-Remaining: number</code>
+- <code>X-Rate-Limit-Reset: timestamp</code></p>
+    </div>
+    
+
+</article><!--End of body content--><footer id="footer">
+            Contents © 2025         <a href="mailto:team@intelligentpresenter.dev">Intelligent Presenter Team</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+            
+        </footer>
+</div>
+</div>
+
+
+        <script src="../../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>

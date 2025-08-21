@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#
+" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Development setup and contributing guide">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Development Guide | Intelligent Presenter Documentation</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="http://localhost:8000/pages/development/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Intelligent Presenter Team">
+<meta property="og:site_name" content="Intelligent Presenter Documentation">
+<meta property="og:title" content="Development Guide">
+<meta property="og:url" content="http://localhost:8000/pages/development/">
+<meta property="og:description" content="Development setup and contributing guide">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-08-18T00:00:00Z">
+<meta property="article:tag" content="contributing">
+<meta property="article:tag" content="development">
+<meta property="article:tag" content="setup">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-expand-md static-top mb-4
+navbar-dark
+bg-dark
+"><div class="container">
+<!-- This keeps the margins nice -->
+        <a class="navbar-brand" href="../../">
+
+            <span id="blog-title">Intelligent Presenter Documentation</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="bs-navbar">
+            <ul class="navbar-nav mr-auto">
+<li class="nav-item">
+<a href="../../" class="nav-link">Home</a>
+                </li>
+<li class="nav-item">
+<a href="../api-documentation/" class="nav-link">API Documentation</a>
+                </li>
+<li class="nav-item">
+<a href="../backend-docs/" class="nav-link">Backend (Go)</a>
+                </li>
+<li class="nav-item">
+<a href="../frontend-docs/" class="nav-link">Frontend (TypeScript)</a>
+                </li>
+<li class="nav-item">
+<a href="../deployment/" class="nav-link">Deployment</a>
+                </li>
+<li class="nav-item active">
+<a href="." class="nav-link">Development <span class="sr-only">(active)</span></a>
+
+                
+            </li>
+</ul>
+<ul class="navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        
+        
+        
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Development Guide</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <h2>Development Guide</h2>
+<p>This guide helps you set up a local development environment and contribute to the Intelligent Presenter project.</p>
+<h3>Prerequisites</h3>
+<h4>Required Software</h4>
+<ul>
+<li>
+<strong>Go</strong>: 1.21 or later</li>
+<li>
+<strong>Node.js</strong>: 18 or later</li>
+<li>
+<strong>npm</strong>: 9 or later</li>
+<li>
+<strong>Git</strong>: Latest version</li>
+<li>
+<strong>Docker</strong>: 20.10+ (optional but recommended)</li>
+</ul>
+<h4>System Requirements</h4>
+<ul>
+<li>
+<strong>OS</strong>: macOS, Linux, or Windows with WSL2</li>
+<li>
+<strong>RAM</strong>: 8 GB minimum, 16 GB recommended</li>
+<li>
+<strong>Storage</strong>: 10 GB free space</li>
+</ul>
+<h3>Project Setup</h3>
+<h4>1. Clone the Repository</h4>
+<div class="code"><pre class="code literal-block">git<span class="w"> </span>clone<span class="w"> </span>https://github.com/your-org/intelligent-presenter.git
+<span class="nb">cd</span><span class="w"> </span>intelligent-presenter
+</pre></div>
+
+<h4>2. Environment Configuration</h4>
+<div class="code"><pre class="code literal-block"><span class="c1"># Copy environment template</span>
+cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+
+<span class="c1"># Edit configuration</span>
+nano<span class="w"> </span>.env
+</pre></div>
+
+<h4>3. Required Environment Variables</h4>
+<div class="code"><pre class="code literal-block"><span class="c1"># Backlog Configuration</span>
+<span class="nv">BACKLOG_DOMAIN</span><span class="o">=</span>yourspace.backlog.jp
+<span class="nv">BACKLOG_CLIENT_ID</span><span class="o">=</span>your_client_id
+<span class="nv">BACKLOG_CLIENT_SECRET</span><span class="o">=</span>your_client_secret
+
+<span class="c1"># AI Provider (choose one)</span>
+<span class="nv">AI_PROVIDER</span><span class="o">=</span>openai
+<span class="nv">OPENAI_API_KEY</span><span class="o">=</span>your_openai_key
+
+<span class="c1"># OR for AWS Bedrock</span>
+<span class="nv">AI_PROVIDER</span><span class="o">=</span>bedrock
+<span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>your_aws_key
+<span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span>your_aws_secret
+<span class="nv">AWS_REGION</span><span class="o">=</span>us-east-1
+
+<span class="c1"># Development URLs</span>
+<span class="nv">FRONTEND_URL</span><span class="o">=</span>http://localhost:3000
+<span class="nv">OAUTH_REDIRECT_URL</span><span class="o">=</span>http://localhost:8080/api/v1/auth/callback
+</pre></div>
+
+<h4>4. Backend Setup</h4>
+<div class="code"><pre class="code literal-block"><span class="nb">cd</span><span class="w"> </span>backend
+
+<span class="c1"># Install Go dependencies</span>
+go<span class="w"> </span>mod<span class="w"> </span>download
+
+<span class="c1"># Run tests to verify setup</span>
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+
+<span class="c1"># Start development server</span>
+go<span class="w"> </span>run<span class="w"> </span>cmd/main.go
+</pre></div>
+
+<p>The backend will start on <code>http://localhost:8080</code></p>
+<h4>5. Frontend Setup</h4>
+<div class="code"><pre class="code literal-block"><span class="nb">cd</span><span class="w"> </span>frontend
+
+<span class="c1"># Install Node.js dependencies</span>
+npm<span class="w"> </span>install
+
+<span class="c1"># Run tests</span>
+npm<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Start development server</span>
+npm<span class="w"> </span>run<span class="w"> </span>dev
+</pre></div>
+
+<p>The frontend will start on <code>http://localhost:3000</code></p>
+<h4>6. Supporting Services</h4>
+<h5>Backlog MCP Server</h5>
+<div class="code"><pre class="code literal-block"><span class="nb">cd</span><span class="w"> </span>backlog-server
+go<span class="w"> </span>mod<span class="w"> </span>download
+go<span class="w"> </span>run<span class="w"> </span>main.go
+</pre></div>
+
+<h5>Speech Server (Optional)</h5>
+<div class="code"><pre class="code literal-block"><span class="nb">cd</span><span class="w"> </span>speech-server
+go<span class="w"> </span>mod<span class="w"> </span>download
+go<span class="w"> </span>run<span class="w"> </span>cmd/main.go
+</pre></div>
+
+<h3>Development Workflow</h3>
+<h4>Branch Strategy</h4>
+<ul>
+<li>
+<strong>main</strong>: Production-ready code</li>
+<li>
+<strong>develop</strong>: Integration branch for features</li>
+<li>
+<strong>feature/</strong>*: Feature development branches</li>
+<li>
+<strong>fix/</strong>*: Bug fix branches</li>
+<li>
+<strong>release/</strong>*: Release preparation branches</li>
+</ul>
+<h4>Creating a Feature Branch</h4>
+<div class="code"><pre class="code literal-block">git<span class="w"> </span>checkout<span class="w"> </span>develop
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>develop
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/your-feature-name
+</pre></div>
+
+<h4>Making Changes</h4>
+<ol>
+<li>
+<strong>Write Tests First</strong>: Follow TDD practices</li>
+<li>
+<strong>Implement Feature</strong>: Write clean, documented code</li>
+<li>
+<strong>Run Tests</strong>: Ensure all tests pass</li>
+<li>
+<strong>Update Documentation</strong>: Keep docs current</li>
+</ol>
+<h4>Running Tests</h4>
+<h5>Backend Tests</h5>
+<div class="code"><pre class="code literal-block"><span class="nb">cd</span><span class="w"> </span>backend
+
+<span class="c1"># Run all tests</span>
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+
+<span class="c1"># Run tests with coverage</span>
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-cover<span class="w"> </span>./...
+
+<span class="c1"># Run specific test package</span>
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./internal/services
+
+<span class="c1"># Run with verbose output</span>
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-v<span class="w"> </span>./...
+
+<span class="c1"># Generate coverage report</span>
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-coverprofile<span class="o">=</span>coverage.out<span class="w"> </span>./...
+go<span class="w"> </span>tool<span class="w"> </span>cover<span class="w"> </span>-html<span class="o">=</span>coverage.out<span class="w"> </span>-o<span class="w"> </span>coverage.html
+</pre></div>
+
+<h5>Frontend Tests</h5>
+<div class="code"><pre class="code literal-block"><span class="nb">cd</span><span class="w"> </span>frontend
+
+<span class="c1"># Run unit tests</span>
+npm<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Run tests in watch mode</span>
+npm<span class="w"> </span>run<span class="w"> </span>test:watch
+
+<span class="c1"># Run tests with coverage</span>
+npm<span class="w"> </span>run<span class="w"> </span>test:coverage
+
+<span class="c1"># Run tests with UI</span>
+npm<span class="w"> </span>run<span class="w"> </span>test:ui
+
+<span class="c1"># Type checking</span>
+npm<span class="w"> </span>run<span class="w"> </span>type-check
+
+<span class="c1"># Linting</span>
+npm<span class="w"> </span>run<span class="w"> </span>lint
+</pre></div>
+
+<h5>End-to-End Tests</h5>
+<div class="code"><pre class="code literal-block"><span class="c1"># Run E2E tests with Playwright</span>
+<span class="nb">cd</span><span class="w"> </span>e2e-tests
+npm<span class="w"> </span>install
+npm<span class="w"> </span>run<span class="w"> </span>test:e2e
+</pre></div>
+
+<h4>Code Quality</h4>
+<h5>Backend Code Style</h5>
+<ul>
+<li>Follow Go conventions and <code>gofmt</code> formatting</li>
+<li>Use meaningful variable and function names</li>
+<li>Write comprehensive comments for exported functions</li>
+<li>Handle errors explicitly</li>
+<li>Use interfaces for abstraction</li>
+</ul>
+<h5>Frontend Code Style</h5>
+<ul>
+<li>Follow TypeScript strict mode guidelines</li>
+<li>Use Vue 3 Composition API patterns</li>
+<li>Implement proper component prop validation</li>
+<li>Write JSDoc comments for complex functions</li>
+<li>Use semantic HTML and ARIA attributes</li>
+</ul>
+<h5>Linting and Formatting</h5>
+<div class="code"><pre class="code literal-block"><span class="c1"># Backend formatting</span>
+<span class="nb">cd</span><span class="w"> </span>backend
+go<span class="w"> </span>fmt<span class="w"> </span>./...
+go<span class="w"> </span>vet<span class="w"> </span>./...
+
+<span class="c1"># Frontend linting</span>
+<span class="nb">cd</span><span class="w"> </span>frontend
+npm<span class="w"> </span>run<span class="w"> </span>lint
+npm<span class="w"> </span>run<span class="w"> </span>lint:fix
+npm<span class="w"> </span>run<span class="w"> </span>format
+</pre></div>
+
+<h3>Architecture Guidelines</h3>
+<h4>Backend Architecture</h4>
+<ul>
+<li>
+<strong>Clean Architecture</strong>: Separate concerns into layers</li>
+<li>
+<strong>Dependency Injection</strong>: Use interfaces for loose coupling</li>
+<li>
+<strong>Error Handling</strong>: Consistent error response patterns</li>
+<li>
+<strong>Logging</strong>: Structured logging with context</li>
+<li>
+<strong>Testing</strong>: Unit tests for business logic, integration tests for APIs</li>
+</ul>
+<h4>Frontend Architecture</h4>
+<ul>
+<li>
+<strong>Component Structure</strong>: Single responsibility principle</li>
+<li>
+<strong>State Management</strong>: Use Pinia for global state</li>
+<li>
+<strong>Type Safety</strong>: Comprehensive TypeScript coverage</li>
+<li>
+<strong>Performance</strong>: Lazy loading and code splitting</li>
+<li>
+<strong>Accessibility</strong>: WCAG 2.1 compliance</li>
+</ul>
+<h3>API Development</h3>
+<h4>Adding New Endpoints</h4>
+<h5>1. Define Models</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// internal/models/your_model.go</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">YourModel</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ID</span><span class="w">   </span><span class="kt">int</span><span class="w">    </span><span class="s">`json:"id"`</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"name"`</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>2. Create Service</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// internal/services/your_service.go</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">YourService</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">config</span><span class="w"> </span><span class="o">*</span><span class="nx">config</span><span class="p">.</span><span class="nx">Config</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">NewYourService</span><span class="p">(</span><span class="nx">cfg</span><span class="w"> </span><span class="o">*</span><span class="nx">config</span><span class="p">.</span><span class="nx">Config</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">YourService</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">YourService</span><span class="p">{</span><span class="nx">config</span><span class="p">:</span><span class="w"> </span><span class="nx">cfg</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">YourService</span><span class="p">)</span><span class="w"> </span><span class="nx">GetYourData</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">YourModel</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Implementation</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>3. Implement Handler</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// internal/api/handlers/your_handler.go</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">YourHandler</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">service</span><span class="w"> </span><span class="o">*</span><span class="nx">services</span><span class="p">.</span><span class="nx">YourService</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">NewYourHandler</span><span class="p">(</span><span class="nx">cfg</span><span class="w"> </span><span class="o">*</span><span class="nx">config</span><span class="p">.</span><span class="nx">Config</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">YourHandler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">YourHandler</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">service</span><span class="p">:</span><span class="w"> </span><span class="nx">services</span><span class="p">.</span><span class="nx">NewYourService</span><span class="p">(</span><span class="nx">cfg</span><span class="p">),</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">YourHandler</span><span class="p">)</span><span class="w"> </span><span class="nx">GetYourData</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">GetYourData</span><span class="p">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusInternalServerError</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">"error"</span><span class="p">:</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">()})</span>
+<span class="w">        </span><span class="k">return</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">c</span><span class="p">.</span><span class="nx">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusOK</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>4. Add Routes</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// internal/api/routes.go</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">SetupRoutes</span><span class="p">(</span><span class="nx">router</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Engine</span><span class="p">,</span><span class="w"> </span><span class="nx">cfg</span><span class="w"> </span><span class="o">*</span><span class="nx">config</span><span class="p">.</span><span class="nx">Config</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">yourHandler</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">handlers</span><span class="p">.</span><span class="nx">NewYourHandler</span><span class="p">(</span><span class="nx">cfg</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nx">v1</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">Group</span><span class="p">(</span><span class="s">"/api/v1"</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">v1</span><span class="p">.</span><span class="nx">GET</span><span class="p">(</span><span class="s">"/your-endpoint"</span><span class="p">,</span><span class="w"> </span><span class="nx">yourHandler</span><span class="p">.</span><span class="nx">GetYourData</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>5. Write Tests</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// tests/your_handler_test.go</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">TestYourHandler_GetYourData</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Test implementation</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>Frontend API Integration</h4>
+<h5>1. Define Types</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// src/types/your-types.ts</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">YourModel</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>2. Create API Client</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// src/services/api.ts</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">yourApi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">getYourData</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">YourModel</span><span class="o">&gt;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">get</span><span class="o">&lt;</span><span class="nx">YourModel</span><span class="o">&gt;</span><span class="p">(</span><span class="s1">'/your-endpoint'</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>3. Add to Store</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// src/stores/your-store.ts</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">useYourStore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">defineStore</span><span class="p">(</span><span class="s1">'your'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ref</span><span class="o">&lt;</span><span class="nx">YourModel</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">fetchData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">data</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">yourApi</span><span class="p">.</span><span class="nx">getYourData</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Failed to fetch data:'</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">fetchData</span><span class="w"> </span><span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+
+<h3>Testing Guidelines</h3>
+<h4>Backend Testing</h4>
+<h5>Unit Tests</h5>
+<div class="code"><pre class="code literal-block"><span class="kd">func</span><span class="w"> </span><span class="nx">TestYourService_Method</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Arrange</span>
+<span class="w">    </span><span class="nx">cfg</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">config</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span><span class="cm">/* test config */</span><span class="p">}</span>
+<span class="w">    </span><span class="nx">service</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">NewYourService</span><span class="p">(</span><span class="nx">cfg</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// Act</span>
+<span class="w">    </span><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">service</span><span class="p">.</span><span class="nx">Method</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1">// Assert</span>
+<span class="w">    </span><span class="nx">assert</span><span class="p">.</span><span class="nx">NoError</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">assert</span><span class="p">.</span><span class="nx">NotNil</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>Integration Tests</h5>
+<div class="code"><pre class="code literal-block"><span class="kd">func</span><span class="w"> </span><span class="nx">TestYourHandler_Integration</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Setup test server</span>
+<span class="w">    </span><span class="nx">router</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">New</span><span class="p">()</span>
+<span class="w">    </span><span class="nx">SetupRoutes</span><span class="p">(</span><span class="nx">router</span><span class="p">,</span><span class="w"> </span><span class="nx">testConfig</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// Create test request</span>
+<span class="w">    </span><span class="nx">req</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httptest</span><span class="p">.</span><span class="nx">NewRequest</span><span class="p">(</span><span class="s">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s">"/api/v1/endpoint"</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">w</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httptest</span><span class="p">.</span><span class="nx">NewRecorder</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1">// Execute request</span>
+<span class="w">    </span><span class="nx">router</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// Verify response</span>
+<span class="w">    </span><span class="nx">assert</span><span class="p">.</span><span class="nx">Equal</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusOK</span><span class="p">,</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Code</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>Frontend Testing</h4>
+<h5>Component Tests</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// tests/components/YourComponent.test.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">mount</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@vue/test-utils'</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">YourComponent</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@/components/YourComponent.vue'</span>
+
+<span class="nx">describe</span><span class="p">(</span><span class="s1">'YourComponent'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">'renders correctly'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">wrapper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">mount</span><span class="p">(</span><span class="nx">YourComponent</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">props</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s1">'Test Title'</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">})</span>
+
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">wrapper</span><span class="p">.</span><span class="nx">text</span><span class="p">()).</span><span class="nx">toContain</span><span class="p">(</span><span class="s1">'Test Title'</span><span class="p">)</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">})</span>
+</pre></div>
+
+<h5>Store Tests</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// tests/stores/your-store.test.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">setActivePinia</span><span class="p">,</span><span class="w"> </span><span class="nx">createPinia</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'pinia'</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useYourStore</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@/stores/your-store'</span>
+
+<span class="nx">describe</span><span class="p">(</span><span class="s1">'Your Store'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">beforeEach</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">setActivePinia</span><span class="p">(</span><span class="nx">createPinia</span><span class="p">())</span>
+<span class="w">  </span><span class="p">})</span>
+
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">'fetches data correctly'</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useYourStore</span><span class="p">()</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">store</span><span class="p">.</span><span class="nx">fetchData</span><span class="p">()</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">store</span><span class="p">.</span><span class="nx">data</span><span class="p">).</span><span class="nx">toBeDefined</span><span class="p">()</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">})</span>
+</pre></div>
+
+<h3>Debugging</h3>
+<h4>Backend Debugging</h4>
+<h5>Using Delve Debugger</h5>
+<div class="code"><pre class="code literal-block"><span class="c1"># Install delve</span>
+go<span class="w"> </span>install<span class="w"> </span>github.com/go-delve/delve/cmd/dlv@latest
+
+<span class="c1"># Start debugging session</span>
+dlv<span class="w"> </span>debug<span class="w"> </span>cmd/main.go
+</pre></div>
+
+<h5>Logging</h5>
+<div class="code"><pre class="code literal-block"><span class="kn">import</span><span class="w"> </span><span class="s">"log/slog"</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">YourFunction</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">slog</span><span class="p">.</span><span class="nx">Info</span><span class="p">(</span><span class="s">"Processing request"</span><span class="p">,</span><span class="w"> </span><span class="s">"id"</span><span class="p">,</span><span class="w"> </span><span class="nx">requestID</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">slog</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="s">"Failed to process"</span><span class="p">,</span><span class="w"> </span><span class="s">"error"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>Frontend Debugging</h4>
+<h5>Browser DevTools</h5>
+<ul>
+<li>Use Vue DevTools extension</li>
+<li>Monitor network requests</li>
+<li>Check console for errors</li>
+<li>Inspect component state</li>
+</ul>
+<h5>VS Code Debugging</h5>
+<div class="code"><pre class="code literal-block"><span class="c1">// .vscode/launch.json</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"launch"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Debug Frontend"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"program"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${workspaceFolder}/frontend/src/main.ts"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"outFiles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"${workspaceFolder}/frontend/dist/**/*.js"</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>Contributing</h3>
+<h4>Pull Request Process</h4>
+<ol>
+<li><strong>Create Feature Branch</strong></li>
+</ol>
+<div class="code"><pre class="code literal-block">git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/your-feature
+</pre></div>
+
+<ol>
+<li><strong>Make Changes and Test</strong></li>
+</ol>
+<div class="code"><pre class="code literal-block"><span class="c1"># Backend tests</span>
+<span class="nb">cd</span><span class="w"> </span>backend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+
+<span class="c1"># Frontend tests</span>
+<span class="nb">cd</span><span class="w"> </span>frontend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>type-check
+</pre></div>
+
+<ol>
+<li><strong>Commit Changes</strong></li>
+</ol>
+<div class="code"><pre class="code literal-block">git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat: add your feature description"</span>
+</pre></div>
+
+<ol>
+<li><strong>Push and Create PR</strong></li>
+</ol>
+<div class="code"><pre class="code literal-block">git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/your-feature
+<span class="c1"># Create PR on GitHub</span>
+</pre></div>
+
+<h4>Commit Message Convention</h4>
+<div class="code"><pre class="code literal-block"><span class="k">type</span><span class="p">(</span><span class="nx">scope</span><span class="p">):</span><span class="w"> </span><span class="nx">description</span>
+
+<span class="nx">feat</span><span class="p">:</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">feature</span>
+<span class="nx">fix</span><span class="p">:</span><span class="w"> </span><span class="nx">fix</span><span class="w"> </span><span class="nx">bug</span>
+<span class="nx">docs</span><span class="p">:</span><span class="w"> </span><span class="nx">update</span><span class="w"> </span><span class="nx">documentation</span>
+<span class="nx">style</span><span class="p">:</span><span class="w"> </span><span class="nx">formatting</span><span class="w"> </span><span class="nx">changes</span>
+<span class="nx">refactor</span><span class="p">:</span><span class="w"> </span><span class="nx">code</span><span class="w"> </span><span class="nx">refactoring</span>
+<span class="nx">test</span><span class="p">:</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="nx">tests</span>
+<span class="nx">chore</span><span class="p">:</span><span class="w"> </span><span class="nx">maintenance</span><span class="w"> </span><span class="nx">tasks</span>
+</pre></div>
+
+<h4>Code Review Checklist</h4>
+<ul>
+<li>[ ] Code follows project conventions</li>
+<li>[ ] Tests are included and passing</li>
+<li>[ ] Documentation is updated</li>
+<li>[ ] No security vulnerabilities</li>
+<li>[ ] Performance considerations addressed</li>
+<li>[ ] Error handling is comprehensive</li>
+</ul>
+<h3>Documentation</h3>
+<h4>Updating Documentation</h4>
+<div class="code"><pre class="code literal-block"><span class="c1"># Generate Go documentation</span>
+<span class="nb">cd</span><span class="w"> </span>backend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>go<span class="w"> </span>doc<span class="w"> </span>-all<span class="w"> </span>&gt;<span class="w"> </span>../docs/go-docs.txt
+
+<span class="c1"># Generate TypeScript documentation</span>
+<span class="nb">cd</span><span class="w"> </span>frontend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>docs
+
+<span class="c1"># Build Nikola documentation site</span>
+<span class="nb">cd</span><span class="w"> </span>docs-site<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>nikola<span class="w"> </span>build
+</pre></div>
+
+<h4>Writing Documentation</h4>
+<ul>
+<li>Use clear, concise language</li>
+<li>Include code examples</li>
+<li>Document edge cases and limitations</li>
+<li>Keep README files current</li>
+<li>Add inline comments for complex logic</li>
+</ul>
+<h3>Troubleshooting</h3>
+<h4>Common Development Issues</h4>
+<h5>Backend Issues</h5>
+<div class="code"><pre class="code literal-block"><span class="c1"># Module not found</span>
+go<span class="w"> </span>mod<span class="w"> </span>tidy
+
+<span class="c1"># Port already in use</span>
+lsof<span class="w"> </span>-ti:8080<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-9
+
+<span class="c1"># Permission denied</span>
+chmod<span class="w"> </span>+x<span class="w"> </span>scripts/setup.sh
+</pre></div>
+
+<h5>Frontend Issues</h5>
+<div class="code"><pre class="code literal-block"><span class="c1"># Node modules issues</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>node_modules<span class="w"> </span>package-lock.json
+npm<span class="w"> </span>install
+
+<span class="c1"># Type errors</span>
+npm<span class="w"> </span>run<span class="w"> </span>type-check
+
+<span class="c1"># Build failures</span>
+npm<span class="w"> </span>run<span class="w"> </span>build<span class="w"> </span>--verbose
+</pre></div>
+
+<h4>Getting Help</h4>
+<ul>
+<li>Check existing GitHub issues</li>
+<li>Review documentation thoroughly</li>
+<li>Ask questions in team channels</li>
+<li>Create detailed bug reports with:</li>
+<li>Steps to reproduce</li>
+<li>Expected vs actual behavior</li>
+<li>Environment details</li>
+<li>Error messages and logs</li>
+</ul>
+</div>
+    
+
+</article><!--End of body content--><footer id="footer">
+            Contents © 2025         <a href="mailto:team@intelligentpresenter.dev">Intelligent Presenter Team</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+            
+        </footer>
+</div>
+</div>
+
+
+        <script src="../../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>

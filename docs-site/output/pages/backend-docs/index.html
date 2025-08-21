@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#
+" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Go backend documentation for the Intelligent Presenter">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backend Documentation (Go) | Intelligent Presenter Documentation</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="http://localhost:8000/pages/backend-docs/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Intelligent Presenter Team">
+<meta property="og:site_name" content="Intelligent Presenter Documentation">
+<meta property="og:title" content="Backend Documentation (Go)">
+<meta property="og:url" content="http://localhost:8000/pages/backend-docs/">
+<meta property="og:description" content="Go backend documentation for the Intelligent Presenter">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-08-18T00:00:00Z">
+<meta property="article:tag" content="backend">
+<meta property="article:tag" content="documentation">
+<meta property="article:tag" content="go">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-expand-md static-top mb-4
+navbar-dark
+bg-dark
+"><div class="container">
+<!-- This keeps the margins nice -->
+        <a class="navbar-brand" href="../../">
+
+            <span id="blog-title">Intelligent Presenter Documentation</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="bs-navbar">
+            <ul class="navbar-nav mr-auto">
+<li class="nav-item">
+<a href="../../" class="nav-link">Home</a>
+                </li>
+<li class="nav-item">
+<a href="../api-documentation/" class="nav-link">API Documentation</a>
+                </li>
+<li class="nav-item active">
+<a href="." class="nav-link">Backend (Go) <span class="sr-only">(active)</span></a>
+                </li>
+<li class="nav-item">
+<a href="../frontend-docs/" class="nav-link">Frontend (TypeScript)</a>
+                </li>
+<li class="nav-item">
+<a href="../deployment/" class="nav-link">Deployment</a>
+                </li>
+<li class="nav-item">
+<a href="../development/" class="nav-link">Development</a>
+
+                
+            </li>
+</ul>
+<ul class="navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        
+        
+        
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Backend Documentation (Go)</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <h2>Backend Documentation (Go)</h2>
+<p>The Intelligent Presenter backend is built with Go and provides a robust, scalable API for slide generation and project management integration.</p>
+<h3>Architecture Overview</h3>
+<p>The backend follows a clean architecture pattern with clear separation of concerns:</p>
+<div class="code"><pre class="code literal-block">backend/
+├── cmd/
+│   └── main.go              # Application entry point
+├── internal/
+│   ├── api/
+│   │   ├── handlers/        # HTTP request handlers
+│   │   └── routes.go        # Route configuration
+│   ├── auth/
+│   │   └── middleware.go    # Authentication middleware
+│   ├── mcp/
+│   │   └── client.go        # MCP client implementation
+│   ├── models/              # Data models and types
+│   └── services/            # Business logic services
+├── pkg/
+│   └── config/              # Configuration management
+└── tests/                   # Test suites
+</pre></div>
+
+<h3>Core Packages</h3>
+<h4>Main Application (<code>cmd/main.go</code>)</h4>
+<p>The main application entry point that:
+- Loads environment configuration
+- Sets up HTTP server with Gin framework
+- Configures CORS and middleware
+- Initializes all API routes
+- Implements graceful shutdown</p>
+<p><strong>Key Features:</strong>
+- Environment variable configuration with <code>.env</code> support
+- Graceful shutdown with signal handling
+- CORS configuration for frontend integration
+- Centralized error handling and logging</p>
+<h4>Configuration (<code>pkg/config</code>)</h4>
+<p><strong>Config Structure:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="kd">type</span><span class="w"> </span><span class="nx">Config</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Port</span><span class="w">                </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Environment</span><span class="w">         </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">BacklogDomain</span><span class="w">       </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">BacklogClientID</span><span class="w">     </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">BacklogClientSecret</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">OAuthRedirectURL</span><span class="w">    </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">AIProvider</span><span class="w">          </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">OpenAIAPIKey</span><span class="w">        </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">AWSAccessKeyID</span><span class="w">      </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">AWSSecretAccessKey</span><span class="w">  </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">AWSRegion</span><span class="w">           </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">MCPBacklogURL</span><span class="w">       </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">MCPSpeechURL</span><span class="w">        </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">JWTSecretKey</span><span class="w">        </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">SpeechCacheDir</span><span class="w">      </span><span class="kt">string</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Configuration is loaded from environment variables with sensible defaults for development.</p>
+<h4>Authentication (<code>internal/auth</code>)</h4>
+<p><strong>JWT Middleware:</strong>
+- Validates JWT tokens from Authorization header
+- Extracts user information and Backlog tokens
+- Provides WebSocket authentication support
+- Implements token generation and validation</p>
+<p><strong>Key Functions:</strong>
+- <code>RequireAuth()</code> - HTTP middleware for protected routes
+- <code>RequireWSAuth()</code> - WebSocket authentication
+- <code>GenerateToken()</code> - Create JWT tokens with user claims
+- <code>ValidateToken()</code> - Token validation and claims extraction</p>
+<h4>API Handlers (<code>internal/api/handlers</code>)</h4>
+<h5>AuthHandler</h5>
+<p>Manages OAuth2 authentication flow with Backlog:
+- OAuth2 state management with CSRF protection
+- Token exchange and user information retrieval
+- JWT token generation and refresh
+- Session management</p>
+<h5>SlideHandler</h5>
+<p>Handles slide generation and WebSocket communication:
+- Slide generation request processing
+- Real-time progress updates via WebSocket
+- Session management for concurrent generations
+- Integration with AI services for content creation</p>
+<h5>MCPHandler</h5>
+<p>Provides project data access through MCP protocol:
+- Project list retrieval
+- Project details and analytics
+- Integration with Backlog MCP server
+- Data validation and error handling</p>
+<h4>Business Logic Services (<code>internal/services</code>)</h4>
+<h5>SlideService</h5>
+<p>Core slide generation service:
+- AI provider abstraction (OpenAI, AWS Bedrock)
+- Content generation from project data
+- Theme-based slide templates
+- Multi-language support</p>
+<p><strong>Key Methods:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SlideService</span><span class="p">)</span><span class="w"> </span><span class="nx">GenerateSlides</span><span class="p">(</span><span class="nx">projectData</span><span class="p">,</span><span class="w"> </span><span class="nx">themes</span><span class="p">,</span><span class="w"> </span><span class="nx">language</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">SlideContent</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SlideService</span><span class="p">)</span><span class="w"> </span><span class="nx">ProcessSlideContent</span><span class="p">(</span><span class="nx">content</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SlideService</span><span class="p">)</span><span class="w"> </span><span class="nx">GenerateSlideAudio</span><span class="p">(</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">language</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">AudioFile</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+</pre></div>
+
+<h5>MCPService</h5>
+<p>Model Context Protocol service for external data access:
+- MCP client management and session handling
+- Backlog project data retrieval
+- Error handling and retry logic
+- Data transformation and validation</p>
+<h5>BedrockService &amp; BedrockSDKService</h5>
+<p>AWS Bedrock integration services:
+- Multiple implementation approaches (HTTP and SDK)
+- Request signing and authentication
+- Model selection and parameter optimization
+- Response processing and error handling</p>
+<h5>SpeechService</h5>
+<p>Text-to-speech functionality:
+- Multiple TTS provider support
+- Audio file caching and optimization
+- Language and voice selection
+- Streaming audio support</p>
+<h4>MCP Client (<code>internal/mcp</code>)</h4>
+<p><strong>MCPClient Features:</strong>
+- JSON-RPC 2.0 protocol implementation
+- Session management for stateful connections
+- Tool invocation and resource access
+- Error handling and timeout management</p>
+<h4>Data Models (<code>internal/models</code>)</h4>
+<h5>Slide Models</h5>
+<div class="code"><pre class="code literal-block"><span class="kd">type</span><span class="w"> </span><span class="nx">SlideTheme</span><span class="w"> </span><span class="kt">string</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">SlideContent</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Title</span><span class="w">       </span><span class="kt">string</span><span class="w">      </span><span class="s">`json:"title"`</span>
+<span class="w">    </span><span class="nx">Content</span><span class="w">     </span><span class="kt">string</span><span class="w">      </span><span class="s">`json:"content"`</span>
+<span class="w">    </span><span class="nx">Theme</span><span class="w">       </span><span class="nx">SlideTheme</span><span class="w">  </span><span class="s">`json:"theme"`</span>
+<span class="w">    </span><span class="nx">SlideIndex</span><span class="w">  </span><span class="kt">int</span><span class="w">         </span><span class="s">`json:"slideIndex"`</span>
+<span class="w">    </span><span class="nx">AudioURL</span><span class="w">    </span><span class="kt">string</span><span class="w">      </span><span class="s">`json:"audioUrl,omitempty"`</span>
+<span class="w">    </span><span class="nx">GeneratedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w">   </span><span class="s">`json:"generatedAt"`</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>Authentication Models</h5>
+<div class="code"><pre class="code literal-block"><span class="kd">type</span><span class="w"> </span><span class="nx">TokenInfo</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">AccessToken</span><span class="w">  </span><span class="kt">string</span><span class="w">    </span><span class="s">`json:"accessToken"`</span>
+<span class="w">    </span><span class="nx">RefreshToken</span><span class="w"> </span><span class="kt">string</span><span class="w">    </span><span class="s">`json:"refreshToken"`</span>
+<span class="w">    </span><span class="nx">TokenType</span><span class="w">    </span><span class="kt">string</span><span class="w">    </span><span class="s">`json:"tokenType"`</span>
+<span class="w">    </span><span class="nx">ExpiresAt</span><span class="w">    </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="s">`json:"expiresAt"`</span>
+<span class="w">    </span><span class="nx">Scope</span><span class="w">        </span><span class="kt">string</span><span class="w">    </span><span class="s">`json:"scope"`</span>
+<span class="p">}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">UserInfo</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ID</span><span class="w">       </span><span class="kt">int</span><span class="w">    </span><span class="s">`json:"id"`</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w">     </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"name"`</span>
+<span class="w">    </span><span class="nx">Email</span><span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"email"`</span>
+<span class="w">    </span><span class="nx">Language</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"language"`</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>Security Features</h3>
+<h4>Authentication &amp; Authorization</h4>
+<ul>
+<li>OAuth2 integration with Backlog</li>
+<li>JWT token-based authentication</li>
+<li>CSRF protection with state parameters</li>
+<li>Secure token storage and validation</li>
+</ul>
+<h4>Request Security</h4>
+<ul>
+<li>CORS configuration for frontend integration</li>
+<li>Request validation and sanitization</li>
+<li>Rate limiting implementation</li>
+<li>Error message sanitization</li>
+</ul>
+<h4>Data Protection</h4>
+<ul>
+<li>Secure credential handling</li>
+<li>Environment-based configuration</li>
+<li>Token encryption and secure storage</li>
+<li>Input validation and SQL injection prevention</li>
+</ul>
+<h3>Performance Optimizations</h3>
+<h4>Caching</h4>
+<ul>
+<li>Audio file caching for TTS</li>
+<li>Project data caching</li>
+<li>Token validation caching</li>
+<li>Static file serving optimization</li>
+</ul>
+<h4>Concurrency</h4>
+<ul>
+<li>Goroutine-based request handling</li>
+<li>Concurrent slide generation</li>
+<li>WebSocket connection pooling</li>
+<li>Async audio processing</li>
+</ul>
+<h4>Resource Management</h4>
+<ul>
+<li>Connection pooling for external services</li>
+<li>Memory-efficient data structures</li>
+<li>Graceful shutdown procedures</li>
+<li>Resource cleanup and garbage collection</li>
+</ul>
+<h3>Testing</h3>
+<p>The backend includes comprehensive test suites:</p>
+<h4>Unit Tests</h4>
+<ul>
+<li>Service layer testing</li>
+<li>Model validation testing</li>
+<li>Authentication flow testing</li>
+<li>MCP client testing</li>
+</ul>
+<h4>Integration Tests</h4>
+<ul>
+<li>API endpoint testing</li>
+<li>Database integration testing</li>
+<li>External service mocking</li>
+<li>End-to-end workflow testing</li>
+</ul>
+<p><strong>Running Tests:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="nb">cd</span><span class="w"> </span>backend
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-cover<span class="w"> </span>./...
+</pre></div>
+
+<h3>Deployment Configuration</h3>
+<h4>Environment Variables</h4>
+<div class="code"><pre class="code literal-block"><span class="nv">PORT</span><span class="o">=</span><span class="m">8080</span>
+<span class="nv">ENVIRONMENT</span><span class="o">=</span>production
+<span class="nv">BACKLOG_DOMAIN</span><span class="o">=</span>yourspace.backlog.jp
+<span class="nv">BACKLOG_CLIENT_ID</span><span class="o">=</span>your_client_id
+<span class="nv">BACKLOG_CLIENT_SECRET</span><span class="o">=</span>your_client_secret
+<span class="nv">AI_PROVIDER</span><span class="o">=</span>openai<span class="w">  </span><span class="c1"># or bedrock</span>
+<span class="nv">OPENAI_API_KEY</span><span class="o">=</span>your_openai_key
+<span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>your_aws_key
+<span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span>your_aws_secret
+<span class="nv">AWS_REGION</span><span class="o">=</span>us-east-1
+</pre></div>
+
+<h4>Docker Support</h4>
+<p>The backend includes Docker configuration for containerized deployment:</p>
+<div class="code"><pre class="code literal-block"><span class="k">FROM</span><span class="w"> </span><span class="s">golang:1.21-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.
+<span class="k">RUN</span><span class="w"> </span>go<span class="w"> </span>build<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>cmd/main.go
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">alpine:latest</span>
+<span class="k">RUN</span><span class="w"> </span>apk<span class="w"> </span>add<span class="w"> </span>--no-cache<span class="w"> </span>ca-certificates
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/root/</span>
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/app/main<span class="w"> </span>.
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">"./main"</span><span class="p">]</span>
+</pre></div>
+
+<h3>Go Documentation</h3>
+<iframe src="../../files/go-docs.txt" width="100%" height="600px" style="border: 1px solid #ccc; border-radius: 4px;"></iframe>
+
+<p><a href="../../files/go-docs.txt">View Full Go Documentation</a></p>
+    </div>
+    
+
+</article><!--End of body content--><footer id="footer">
+            Contents © 2025         <a href="mailto:team@intelligentpresenter.dev">Intelligent Presenter Team</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+            
+        </footer>
+</div>
+</div>
+
+
+        <script src="../../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>

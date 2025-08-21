@@ -1,0 +1,76 @@
+{
+  "entryPoints": ["src/"],
+  "entryPointStrategy": "expand",
+  "out": "../docs-site/files/typescript-docs",
+  "name": "Intelligent Presenter Frontend API",
+  "theme": "default",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "exclude": [
+    "**/*.test.ts",
+    "**/test-*.ts",
+    "**/__tests__/**",
+    "**/__mocks__/**",
+    "**/node_modules/**"
+  ],
+  "includeVersion": true,
+  "sort": ["source-order"],
+  "gitRevision": "main",
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "categorizeByGroup": true,
+  "defaultCategory": "Other",
+  "categoryOrder": [
+    "Components",
+    "Services", 
+    "Stores",
+    "Types",
+    "Utilities",
+    "*",
+    "Other"
+  ],
+  "groupOrder": [
+    "Classes",
+    "Interfaces", 
+    "Type Aliases",
+    "Functions",
+    "Variables",
+    "*"
+  ],
+  "searchInComments": true,
+  "cleanOutputDir": true,
+  "treatWarningsAsErrors": false,
+  "blockTags": [
+    "@fileoverview",
+    "@version", 
+    "@async",
+    "@author",
+    "@returns",
+    "@throws",
+    "@example",
+    "@property",
+    "@param",
+    "@type",
+    "@typedef"
+  ],
+  "pretty": true,
+  "emit": "docs",
+  "lightHighlightTheme": "light-plus",
+  "darkHighlightTheme": "dark-plus",
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "titleLink": "/pages/frontend-docs/",
+  "navigationLinks": {
+    "Documentation Home": "/",
+    "Backend API": "/pages/backend-docs/",
+    "API Reference": "/pages/api-documentation/"
+  }
+}

@@ -1,0 +1,184 @@
+services:
+  # Go backend service
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: intelligent-presenter-backend
+    env_file:
+      - .env
+    ports:
+      - "0.0.0.0:8081:8080"
+    environment:
+      - PORT=8080
+      - GIN_MODE=release
+      - FRONTEND_BASE_URL=${FRONTEND_BASE_URL:-http://localhost:3003}
+      - BACKLOG_DOMAIN=${BACKLOG_DOMAIN}
+      - BACKLOG_CLIENT_ID=${BACKLOG_CLIENT_ID}
+      - BACKLOG_CLIENT_SECRET=${BACKLOG_CLIENT_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MCP_BACKLOG_URL=http://backlog-mcp-server:3001
+      - MCP_SPEECH_URL=http://speech-mcp-server:3001
+    depends_on:
+      - backlog-mcp-server
+      - speech-mcp-server
+    volumes:
+      - ./logs:/app/logs
+      - ./backend/config:/app/config
+    networks:
+      - intelligent-presenter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # TypeScript frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args: {}
+    container_name: intelligent-presenter-frontend
+    env_file:
+      - .env
+    ports:
+      - "0.0.0.0:3003:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - intelligent-presenter-network
+    restart: unless-stopped
+
+  # Backlog MCP Server (supports OAuth tokens via HTTP bridge)
+  backlog-mcp-server:
+    build:
+      context: ./backlog-server
+      dockerfile: Dockerfile
+    container_name: backlog-mcp-server
+    environment:
+      - BACKLOG_DOMAIN=${BACKLOG_DOMAIN}
+      # BACKLOG_API_KEY is optional - OAuth tokens passed dynamically via HTTP bridge
+      - BACKLOG_API_KEY=${BACKLOG_API_KEY:-}
+    networks:
+      - intelligent-presenter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Speech MCP Server (with VOICEVOX + Native MLX-Audio + Kokoro TTS integration)
+  speech-mcp-server:
+    build:
+      context: ./speech-server
+      dockerfile: Dockerfile
+    container_name: speech-mcp-server
+    environment:
+      - PORT=3001
+      - TTS_ENGINE=voicevox  # Primary: voicevox, Secondary: mlx-audio (native), Tertiary: kokoro
+      - LANGUAGE=ja
+      - VOICE_GENDER=female
+      - VOICEVOX_ENGINE_URL=http://voicevox-engine:50021
+      - MLX_AUDIO_URL=http://host.docker.internal:8881  # Native macOS MLX-Audio
+      - KOKORO_TTS_URL=http://kokoro-tts-server:8882
+    ports:
+      - "0.0.0.0:3002:3001"
+    volumes:
+      - ./audio-cache:/app/cache
+    depends_on:
+      - voicevox-engine
+      - kokoro-tts-server
+    networks:
+      - intelligent-presenter-network
+    restart: unless-stopped
+
+  # VOICEVOX Engine (Japanese TTS, Apple Silicon optimized)
+  voicevox-engine:
+    image: voicevox/voicevox_engine:cpu-arm64-latest
+    container_name: voicevox-engine
+    ports:
+      - "127.0.0.1:50021:50021"
+    networks:
+      - intelligent-presenter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:50021/speakers"]
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # MLX-Audio runs natively on macOS (not in Docker)
+  # Native MLX-Audio server will be available at http://host.docker.internal:8881
+
+  # Kokoro TTS Server (82M Parameter Open-Weight Multi-language TTS)
+  kokoro-tts-server:
+    build:
+      context: ./kokoro-tts-server
+      dockerfile: Dockerfile
+    container_name: kokoro-tts-server
+    ports:
+      - "127.0.0.1:8882:8882"
+    environment:
+      - PORT=8882
+      - MODEL_CACHE_DIR=/app/models
+      - AUDIO_CACHE_DIR=/app/cache
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+    volumes:
+      - ./kokoro-models:/app/models
+      - ./kokoro-cache:/app/cache
+    networks:
+      - intelligent-presenter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8882/health"]
+      timeout: 15s
+      retries: 5
+      start_period: 120s
+
+  # Redis cache (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: intelligent-presenter-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - intelligent-presenter-network
+    restart: unless-stopped
+
+  # Nginx reverse proxy (production environment)
+  nginx:
+    image: nginx:alpine
+    container_name: intelligent-presenter-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - intelligent-presenter-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  redis-data:
+    driver: local
+
+networks:
+  intelligent-presenter-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

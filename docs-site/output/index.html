@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#
+" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Complete documentation for the Intelligent Presenter project">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intelligent Presenter Documentation</title>
+<link href="assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
+<link rel="canonical" href="http://localhost:8000/">
+<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><meta name="author" content="Intelligent Presenter Team">
+<meta property="og:site_name" content="Intelligent Presenter Documentation">
+<meta property="og:title" content="Intelligent Presenter Documentation">
+<meta property="og:url" content="http://localhost:8000/">
+<meta property="og:description" content="Complete documentation for the Intelligent Presenter project">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-08-18T00:00:00Z">
+<meta property="article:tag" content="documentation">
+<meta property="article:tag" content="intelligent-presenter">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-expand-md static-top mb-4
+navbar-dark
+bg-dark
+"><div class="container">
+<!-- This keeps the margins nice -->
+        <a class="navbar-brand" href=".">
+
+            <span id="blog-title">Intelligent Presenter Documentation</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="bs-navbar">
+            <ul class="navbar-nav mr-auto">
+<li class="nav-item active">
+<a href="." class="nav-link">Home <span class="sr-only">(active)</span></a>
+                </li>
+<li class="nav-item">
+<a href="pages/api-documentation/" class="nav-link">API Documentation</a>
+                </li>
+<li class="nav-item">
+<a href="pages/backend-docs/" class="nav-link">Backend (Go)</a>
+                </li>
+<li class="nav-item">
+<a href="pages/frontend-docs/" class="nav-link">Frontend (TypeScript)</a>
+                </li>
+<li class="nav-item">
+<a href="pages/deployment/" class="nav-link">Deployment</a>
+                </li>
+<li class="nav-item">
+<a href="pages/development/" class="nav-link">Development</a>
+
+                
+            </li>
+</ul>
+<ul class="navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        
+        
+        
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Intelligent Presenter Documentation</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <h2>Intelligent Presenter Documentation</h2>
+<p>Welcome to the complete documentation for the <strong>Intelligent Presenter</strong> project - an AI-powered HTML slide presentation system with integrated project management features.</p>
+<h3>Project Overview</h3>
+<p>Intelligent Presenter is a sophisticated web application that generates interactive HTML presentations using AI services and integrates with Backlog project management. The system provides:</p>
+<ul>
+<li>
+<strong>AI-Powered Slide Generation</strong>: Automated content creation using OpenAI or AWS Bedrock</li>
+<li>
+<strong>Project Integration</strong>: Direct integration with Backlog for project data visualization  </li>
+<li>
+<strong>Multi-language Support</strong>: Text-to-speech narration in multiple languages</li>
+<li>
+<strong>Real-time Updates</strong>: WebSocket-based live slide delivery</li>
+<li>
+<strong>Responsive Design</strong>: Mobile-friendly presentation interface</li>
+</ul>
+<h3>Architecture</h3>
+<p>The project consists of several key components:</p>
+<h4>Backend (Go)</h4>
+<ul>
+<li>
+<strong>Main Server</strong>: RESTful API built with Gin framework</li>
+<li>
+<strong>Authentication</strong>: OAuth2 integration with Backlog</li>
+<li>
+<strong>AI Services</strong>: Integration with OpenAI and AWS Bedrock</li>
+<li>
+<strong>MCP Integration</strong>: Model Context Protocol for external data sources</li>
+<li>
+<strong>Speech Services</strong>: Text-to-speech functionality with multiple providers</li>
+</ul>
+<h4>Frontend (TypeScript/Vue)</h4>
+<ul>
+<li>
+<strong>Vue 3 Application</strong>: Modern reactive UI framework</li>
+<li>
+<strong>Pinia State Management</strong>: Centralized state handling</li>
+<li>
+<strong>Real-time Communication</strong>: WebSocket integration</li>
+<li>
+<strong>Slide Processing</strong>: Markdown to HTML conversion with Slidev</li>
+<li>
+<strong>Audio Integration</strong>: Synchronized narration playback</li>
+</ul>
+<h4>Supporting Services</h4>
+<ul>
+<li>
+<strong>Speech Server</strong>: Go-based TTS service</li>
+<li>
+<strong>MCP Servers</strong>: Backlog integration and external data access</li>
+<li>
+<strong>Audio Processing</strong>: Multi-provider TTS with caching</li>
+</ul>
+<h3>Quick Navigation</h3>
+<h4><a href="pages/api-documentation/">API Documentation</a></h4>
+<p>Complete API reference for all endpoints, WebSocket connections, and data structures.</p>
+<h4><a href="pages/backend-docs/">Backend Documentation</a></h4>
+<p>Go package documentation covering all services, handlers, and business logic.</p>
+<h4><a href="pages/frontend-docs/">Frontend Documentation</a></h4>
+<p>TypeScript/Vue component documentation and architecture details.</p>
+<h4><a href="pages/deployment/">Deployment Guide</a></h4>
+<p>Instructions for deploying the system in production environments.</p>
+<h4><a href="pages/development/">Development Setup</a></h4>
+<p>Getting started with local development and contributing guidelines.</p>
+<h3>Key Features</h3>
+<ul>
+<li>
+<strong>Automated Content Generation</strong>: AI-driven slide creation from project data</li>
+<li>
+<strong>Interactive Presentations</strong>: HTML-based slides with navigation and animations</li>
+<li>
+<strong>Project Analytics</strong>: Visual representation of project metrics and progress</li>
+<li>
+<strong>Multi-modal Output</strong>: Combined visual and audio presentation formats</li>
+<li>
+<strong>Extensible Architecture</strong>: Plugin-based system for additional data sources</li>
+</ul>
+<h3>Technology Stack</h3>
+<ul>
+<li>
+<strong>Backend</strong>: Go, Gin, OAuth2, JWT, WebSockets</li>
+<li>
+<strong>Frontend</strong>: Vue 3, TypeScript, Vite, Pinia</li>
+<li>
+<strong>AI Services</strong>: OpenAI GPT, AWS Bedrock (Claude, Titan)</li>
+<li>
+<strong>Speech</strong>: Multiple TTS providers (Kokoro, MLX, Cloud services)</li>
+<li>
+<strong>Documentation</strong>: Nikola, TypeDoc, Go doc</li>
+<li>
+<strong>Testing</strong>: Vitest, Go testing, Playwright E2E</li>
+</ul>
+<h3>Getting Started</h3>
+<h4>For Developers</h4>
+<ol>
+<li>
+<strong><a href="pages/development/">Development Setup</a></strong> - Set up your local development environment</li>
+<li>
+<strong><a href="pages/api-documentation/">API Documentation</a></strong> - Understand the system interfaces  </li>
+<li>
+<strong><a href="pages/backend-docs/">Architecture Overview</a></strong> - Learn about the system design</li>
+<li>
+<strong><a href="pages/frontend-docs/">Frontend Guide</a></strong> - Explore the user interface components</li>
+</ol>
+<h4>Documentation Quick Links</h4>
+<ul>
+<li>🔗 <strong><a href="files/typescript-docs/index.html">Live TypeScript API Documentation</a></strong> - Generated from source code</li>
+<li>📄 <strong><a href="files/go-docs.txt">Go Package Documentation</a></strong> - Backend package reference</li>
+</ul>
+<hr>
+<p>This documentation is generated automatically using Nikola + TypeDoc + Go doc integration.</p>
+    </div>
+    
+
+</article><!--End of body content--><footer id="footer">
+            Contents © 2025         <a href="mailto:team@intelligentpresenter.dev">Intelligent Presenter Team</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+            
+        </footer>
+</div>
+</div>
+
+
+        <script src="assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>

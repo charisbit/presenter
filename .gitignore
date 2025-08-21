@@ -1,0 +1,82 @@
+# Dependencies
+node_modules/
+external-deps/
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Go specific
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Coverage
+coverage/
+*.lcov
+
+# Audio cache
+audio-cache/
+
+# MLX-Audio cache and models
+mlx-cache/
+mlx-models/
+
+# MLX-Audio-Native
+mlx-audio-native/__pycache__/
+mlx-audio-native/cache/
+mlx-audio-native/models/
+mlx-audio-native/venv/
+
+# Kokoro TTS cache and models
+kokoro-cache/
+kokoro-models/
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+
+# Temporary files
+tmp/
+temp/
+docs-site/cache/
+docs-site/__pycache__/
+docs-site/output/build-report.txt
+frontend/docs-site/
+
+# Generations
+intelligent-presenter-docs-*.tar.gz

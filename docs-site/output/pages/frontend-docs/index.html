@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#
+" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="TypeScript/Vue frontend documentation for the Intelligent Presenter">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frontend Documentation (TypeScript) | Intelligent Presenter Documentation</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="http://localhost:8000/pages/frontend-docs/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Intelligent Presenter Team">
+<meta property="og:site_name" content="Intelligent Presenter Documentation">
+<meta property="og:title" content="Frontend Documentation (TypeScript)">
+<meta property="og:url" content="http://localhost:8000/pages/frontend-docs/">
+<meta property="og:description" content="TypeScript/Vue frontend documentation for the Intelligent Presenter">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-08-18T00:00:00Z">
+<meta property="article:tag" content="documentation">
+<meta property="article:tag" content="frontend">
+<meta property="article:tag" content="typescript">
+<meta property="article:tag" content="vue">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-expand-md static-top mb-4
+navbar-dark
+bg-dark
+"><div class="container">
+<!-- This keeps the margins nice -->
+        <a class="navbar-brand" href="../../">
+
+            <span id="blog-title">Intelligent Presenter Documentation</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="bs-navbar">
+            <ul class="navbar-nav mr-auto">
+<li class="nav-item">
+<a href="../../" class="nav-link">Home</a>
+                </li>
+<li class="nav-item">
+<a href="../api-documentation/" class="nav-link">API Documentation</a>
+                </li>
+<li class="nav-item">
+<a href="../backend-docs/" class="nav-link">Backend (Go)</a>
+                </li>
+<li class="nav-item active">
+<a href="." class="nav-link">Frontend (TypeScript) <span class="sr-only">(active)</span></a>
+                </li>
+<li class="nav-item">
+<a href="../deployment/" class="nav-link">Deployment</a>
+                </li>
+<li class="nav-item">
+<a href="../development/" class="nav-link">Development</a>
+
+                
+            </li>
+</ul>
+<ul class="navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        
+        
+        
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Frontend Documentation (TypeScript)</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <h2>Frontend Documentation (TypeScript/Vue)</h2>
+<p>The Intelligent Presenter frontend is a modern Vue 3 application built with TypeScript, providing an intuitive interface for presentation generation and project management.</p>
+<h3>Architecture Overview</h3>
+<p>The frontend follows Vue 3 composition API patterns with TypeScript for type safety:</p>
+<div class="code"><pre class="code literal-block">frontend/src/
+├── components/          # Reusable Vue components
+├── services/           # API clients and business logic
+├── stores/             # Pinia state management
+├── types/              # TypeScript type definitions
+├── utils/              # Utility functions
+├── views/              # Page components
+├── router/             # Vue Router configuration
+└── main.ts            # Application entry point
+</pre></div>
+
+<h3>Technology Stack</h3>
+<ul>
+<li>
+<strong>Framework</strong>: Vue 3 with Composition API</li>
+<li>
+<strong>Language</strong>: TypeScript</li>
+<li>
+<strong>State Management</strong>: Pinia</li>
+<li>
+<strong>Routing</strong>: Vue Router 4</li>
+<li>
+<strong>Build Tool</strong>: Vite</li>
+<li>
+<strong>HTTP Client</strong>: Axios</li>
+<li>
+<strong>UI Components</strong>: Custom components</li>
+<li>
+<strong>Styling</strong>: CSS with modern features</li>
+<li>
+<strong>Testing</strong>: Vitest + Vue Test Utils</li>
+</ul>
+<h3>Core Architecture</h3>
+<h4>Application Entry Point (<code>main.ts</code>)</h4>
+<p>The main application setup includes:
+- Vue app initialization with TypeScript support
+- Pinia store configuration
+- Router setup with type-safe routing
+- Global component registration
+- Error handling configuration</p>
+<div class="code"><pre class="code literal-block"><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createApp</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'vue'</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createPinia</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'pinia'</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">App</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'./App.vue'</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'./router'</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createApp</span><span class="p">(</span><span class="nx">App</span><span class="p">)</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">createPinia</span><span class="p">())</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">router</span><span class="p">)</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">mount</span><span class="p">(</span><span class="s1">'#app'</span><span class="p">)</span>
+</pre></div>
+
+<h4>Routing (<code>router/index.ts</code>)</h4>
+<p><strong>Route Configuration:</strong>
+- <strong>Home</strong> (<code>/</code>) - Welcome page and project selection
+- <strong>Login</strong> (<code>/login</code>) - Authentication interface
+- <strong>Callback</strong> (<code>/callback</code>) - OAuth callback handling
+- <strong>Project Selection</strong> (<code>/projects</code>) - Project list and selection
+- <strong>Presentation</strong> (<code>/presentation</code>) - Slide generation and viewing</p>
+<p><strong>Router Features:</strong>
+- Type-safe route definitions
+- Navigation guards for authentication
+- Route-based code splitting
+- Dynamic route parameters</p>
+<h4>State Management (<code>stores/</code>)</h4>
+<h5>Auth Store (<code>stores/auth.ts</code>)</h5>
+<p>Manages authentication state and user session:</p>
+<div class="code"><pre class="code literal-block"><span class="kd">interface</span><span class="w"> </span><span class="nx">AuthState</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">user</span><span class="o">:</span><span class="w"> </span><span class="kt">UserInfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="nx">token</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="nx">isAuthenticated</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+<span class="w">  </span><span class="nx">isLoading</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Key Actions:</strong>
+- <code>login()</code> - Initiate OAuth flow
+- <code>handleCallback()</code> - Process OAuth callback
+- <code>refreshToken()</code> - Refresh authentication token
+- <code>logout()</code> - Clear session and redirect
+- <code>getUserInfo()</code> - Fetch user profile</p>
+<h5>Slides Store (<code>stores/slides.ts</code>)</h5>
+<p>Manages presentation state and slide generation:</p>
+<div class="code"><pre class="code literal-block"><span class="kd">interface</span><span class="w"> </span><span class="nx">SlidesState</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">currentSession</span><span class="o">:</span><span class="w"> </span><span class="kt">SlideSession</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="nx">slides</span><span class="o">:</span><span class="w"> </span><span class="kt">SlideContent</span><span class="p">[]</span>
+<span class="w">  </span><span class="nx">isGenerating</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+<span class="w">  </span><span class="nx">progress</span><span class="o">:</span><span class="w"> </span><span class="kt">GenerationProgress</span>
+<span class="w">  </span><span class="nx">selectedProject</span><span class="o">:</span><span class="w"> </span><span class="kt">Project</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Key Actions:</strong>
+- <code>generateSlides()</code> - Start slide generation
+- <code>connectWebSocket()</code> - Establish real-time connection
+- <code>updateProgress()</code> - Track generation progress
+- <code>addSlide()</code> - Add generated slide to collection
+- <code>clearSession()</code> - Reset generation state</p>
+<h4>API Services (<code>services/</code>)</h4>
+<h5>API Client (<code>services/api.ts</code>)</h5>
+<p>Centralized HTTP client with TypeScript interfaces:</p>
+<p><strong>Features:</strong>
+- Axios-based HTTP client with interceptors
+- Automatic token injection
+- Request/response type safety
+- Error handling and retry logic
+- WebSocket service integration</p>
+<p><strong>API Modules:</strong></p>
+<div class="code"><pre class="code literal-block"><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">authApi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">initiateOAuth</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">redirectUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">OAuthInitResponse</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">handleCallback</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">state</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">AuthResponse</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">refreshToken</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">AuthResponse</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">logout</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">getUserInfo</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">UserInfo</span><span class="o">&gt;</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">projectApi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">getProjects</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Project</span><span class="p">[]</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">getProjectOverview</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">projectId</span><span class="o">:</span><span class="w"> </span><span class="kt">ProjectID</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">ProjectOverview</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">getProjectProgress</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">projectId</span><span class="o">:</span><span class="w"> </span><span class="kt">ProjectID</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">ProjectProgress</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">getProjectIssues</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">projectId</span><span class="o">:</span><span class="w"> </span><span class="kt">ProjectID</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">ProjectIssues</span><span class="o">&gt;</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">slideApi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">generateSlides</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="kt">SlideGenerationRequest</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">SlideGenerationResponse</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">getSlideStatus</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">sessionId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">SlideStatus</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>WebSocket Service</h5>
+<p>Real-time communication for slide generation:</p>
+<div class="code"><pre class="code literal-block"><span class="kd">class</span><span class="w"> </span><span class="nx">WebSocketService</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">private</span><span class="w"> </span><span class="nx">socket</span><span class="o">:</span><span class="w"> </span><span class="kt">WebSocket</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="k">private</span><span class="w"> </span><span class="nx">eventHandlers</span><span class="o">:</span><span class="w"> </span><span class="kt">Map</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nb">Function</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Map</span><span class="p">()</span>
+
+<span class="w">  </span><span class="nx">connect</span><span class="p">(</span><span class="nx">sessionId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+<span class="w">  </span><span class="nx">disconnect</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+<span class="w">  </span><span class="nx">on</span><span class="p">(</span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="kt">Function</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+<span class="w">  </span><span class="nx">off</span><span class="p">(</span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="kt">Function</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+<span class="w">  </span><span class="k">private</span><span class="w"> </span><span class="nx">handleMessage</span><span class="p">(</span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">MessageEvent</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>Slidev Service (<code>services/slidev.ts</code>)</h5>
+<p>Slide processing and compilation:</p>
+<p><strong>SlidevProcessor Features:</strong>
+- Markdown to HTML conversion
+- Chart.js integration
+- Mermaid diagram support
+- Theme application
+- Asset optimization</p>
+<div class="code"><pre class="code literal-block"><span class="kd">class</span><span class="w"> </span><span class="nx">SlidevProcessor</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">processSlideContent</span><span class="p">(</span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">compileSlides</span><span class="p">(</span><span class="nx">slides</span><span class="o">:</span><span class="w"> </span><span class="kt">SlideContent</span><span class="p">[])</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">CompiledSlides</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="nx">processChartConfig</span><span class="p">(</span><span class="nx">config</span><span class="o">:</span><span class="w"> </span><span class="kt">ChartConfig</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">ChartConfiguration</span>
+<span class="w">  </span><span class="nx">processMermaidDiagram</span><span class="p">(</span><span class="nx">diagram</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>Type Definitions (<code>types/</code>)</h4>
+<h5>Authentication Types (<code>types/auth.ts</code>)</h5>
+<div class="code"><pre class="code literal-block"><span class="kd">interface</span><span class="w"> </span><span class="nx">UserInfo</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kd">interface</span><span class="w"> </span><span class="nx">AuthResponse</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">token</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">user</span><span class="o">:</span><span class="w"> </span><span class="kt">UserInfo</span>
+<span class="p">}</span>
+
+<span class="kd">interface</span><span class="w"> </span><span class="nx">OAuthInitResponse</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">authUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">state</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>Slide Types (<code>types/slides.ts</code>)</h5>
+<div class="code"><pre class="code literal-block"><span class="kr">type</span><span class="w"> </span><span class="nx">SlideTheme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'project_overview'</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'project_progress'</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'issue_management'</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'risk_analysis'</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'team_overview'</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'document_management'</span>
+
+<span class="kd">interface</span><span class="w"> </span><span class="nx">SlideContent</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">theme</span><span class="o">:</span><span class="w"> </span><span class="kt">SlideTheme</span>
+<span class="w">  </span><span class="nx">slideIndex</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="nx">audioUrl?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">generatedAt</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kd">interface</span><span class="w"> </span><span class="nx">SlideGenerationRequest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">projectId</span><span class="o">:</span><span class="w"> </span><span class="kt">ProjectID</span>
+<span class="w">  </span><span class="nx">themes</span><span class="o">:</span><span class="w"> </span><span class="kt">SlideTheme</span><span class="p">[]</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">includeAudio</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>Project Types (<code>types/index.ts</code>)</h5>
+<div class="code"><pre class="code literal-block"><span class="kd">interface</span><span class="w"> </span><span class="nx">Project</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">startDate?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">dueDate?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="nx">progress?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span>
+<span class="p">}</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="nx">ProjectID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span>
+</pre></div>
+
+<h4>Utility Functions (<code>utils/</code>)</h4>
+<h5>Slide Utilities (<code>utils/slideUtils.ts</code>)</h5>
+<p>Helper functions for slide processing:</p>
+<div class="code"><pre class="code literal-block"><span class="c1">// Theme label mapping</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getThemeLabel</span><span class="p">(</span><span class="nx">theme</span><span class="o">:</span><span class="w"> </span><span class="kt">SlideTheme</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+
+<span class="c1">// Code block processing</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processBareMessageCode</span><span class="p">(</span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+
+<span class="c1">// Chart.js configuration processing</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processChartJSConfigs</span><span class="p">(</span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+</pre></div>
+
+<h3>Component Architecture</h3>
+<h4>Views (Page Components)</h4>
+<h5>HomeView</h5>
+<ul>
+<li>Welcome interface and navigation</li>
+<li>Project selection overview</li>
+<li>Authentication status display</li>
+</ul>
+<h5>LoginView</h5>
+<ul>
+<li>OAuth authentication interface</li>
+<li>Error handling and feedback</li>
+<li>Redirect management</li>
+</ul>
+<h5>ProjectSelectionView</h5>
+<ul>
+<li>Project list display</li>
+<li>Search and filtering</li>
+<li>Project details preview</li>
+</ul>
+<h5>PresentationView</h5>
+<ul>
+<li>Real-time slide generation interface</li>
+<li>Progress tracking and status updates</li>
+<li>Generated slide display and navigation</li>
+<li>Audio playback controls</li>
+</ul>
+<h5>CallbackView</h5>
+<ul>
+<li>OAuth callback processing</li>
+<li>Loading states and error handling</li>
+<li>Automatic redirection</li>
+</ul>
+<h4>Components</h4>
+<h5>ChartComponent</h5>
+<p>Reusable chart rendering component:
+- Chart.js integration
+- Dynamic data binding
+- Responsive design
+- Type-safe configuration</p>
+<h3>State Flow</h3>
+<h4>Authentication Flow</h4>
+<ol>
+<li>User initiates login → <code>authStore.login()</code>
+</li>
+<li>OAuth URL generated → Redirect to Backlog</li>
+<li>Callback processing → <code>authStore.handleCallback()</code>
+</li>
+<li>Token storage → Update auth state</li>
+<li>User info retrieval → <code>authStore.getUserInfo()</code>
+</li>
+</ol>
+<h4>Slide Generation Flow</h4>
+<ol>
+<li>Project selection → Update <code>slidesStore.selectedProject</code>
+</li>
+<li>Theme selection → Configure generation parameters</li>
+<li>Generation initiation → <code>slidesStore.generateSlides()</code>
+</li>
+<li>WebSocket connection → Real-time progress updates</li>
+<li>Slide reception → Add to slides collection</li>
+<li>Completion handling → Update UI state</li>
+</ol>
+<h3>Development Tools</h3>
+<h4>TypeScript Configuration</h4>
+<p>Strict TypeScript configuration with:
+- Strict null checks
+- No implicit any
+- Unused locals detection
+- Import/export validation</p>
+<h4>Build Configuration (Vite)</h4>
+<ul>
+<li>Fast HMR development server</li>
+<li>Optimized production builds</li>
+<li>Asset optimization</li>
+<li>Environment variable handling</li>
+</ul>
+<h4>Testing Setup (Vitest)</h4>
+<ul>
+<li>Unit tests for stores and utilities</li>
+<li>Component testing with Vue Test Utils</li>
+<li>Mocking for external dependencies</li>
+<li>Coverage reporting</li>
+</ul>
+<p><strong>Running Tests:</strong></p>
+<div class="code"><pre class="code literal-block">npm<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span><span class="w">          </span><span class="c1"># Run tests</span>
+npm<span class="w"> </span>run<span class="w"> </span>test:ui<span class="w">       </span><span class="c1"># Visual test interface</span>
+npm<span class="w"> </span>run<span class="w"> </span>test:coverage<span class="w"> </span><span class="c1"># Generate coverage report</span>
+</pre></div>
+
+<h4>Code Quality</h4>
+<ul>
+<li>ESLint configuration with Vue and TypeScript rules</li>
+<li>Prettier for code formatting</li>
+<li>Husky for pre-commit hooks</li>
+<li>Type checking in CI/CD</li>
+</ul>
+<h3>Performance Optimizations</h3>
+<h4>Code Splitting</h4>
+<ul>
+<li>Route-based lazy loading</li>
+<li>Component-level code splitting</li>
+<li>Dynamic imports for large dependencies</li>
+</ul>
+<h4>State Management</h4>
+<ul>
+<li>Computed properties for derived state</li>
+<li>Reactive state updates</li>
+<li>Efficient re-rendering</li>
+</ul>
+<h4>Asset Optimization</h4>
+<ul>
+<li>Image optimization and lazy loading</li>
+<li>CSS tree shaking</li>
+<li>Bundle size optimization</li>
+<li>Caching strategies</li>
+</ul>
+<h3>TypeScript Documentation</h3>
+<iframe src="../../files/typescript-docs/index.html" width="100%" height="600px" style="border: 1px solid #ccc; border-radius: 4px;"></iframe>
+
+<p><a href="../../files/typescript-docs/index.html">View Full TypeScript Documentation</a></p>
+<h3>Development Guidelines</h3>
+<h4>Component Development</h4>
+<ul>
+<li>Use Composition API with <code>&lt;script setup&gt;</code>
+</li>
+<li>Implement proper TypeScript interfaces</li>
+<li>Follow Vue 3 best practices</li>
+<li>Include comprehensive prop validation</li>
+</ul>
+<h4>Store Development</h4>
+<ul>
+<li>Use Pinia with TypeScript</li>
+<li>Implement proper action error handling</li>
+<li>Maintain immutable state updates</li>
+<li>Document store interfaces</li>
+</ul>
+<h4>API Integration</h4>
+<ul>
+<li>Use typed API client methods</li>
+<li>Implement proper error boundaries</li>
+<li>Handle loading and error states</li>
+<li>Maintain request/response type safety</li>
+</ul>
+</div>
+    
+
+</article><!--End of body content--><footer id="footer">
+            Contents © 2025         <a href="mailto:team@intelligentpresenter.dev">Intelligent Presenter Team</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+            
+        </footer>
+</div>
+</div>
+
+
+        <script src="../../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>
