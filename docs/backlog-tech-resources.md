@@ -62,7 +62,7 @@ const issue = await client.postIssue({
 ### 概要
 - Model Context Protocol (MCP) サーバー
 - AI代理（Claude Desktop/Cline/Cursor等）とBacklog APIを接続
-- Nulab公式開発・保守
+- 公式開発・保守
 - TypeScript実装
 
 ### アーキテクチャ
@@ -428,7 +428,7 @@ services:
       - backlog-mcp-server
       - speech-mcp-server
   
-  # Backlog MCP Server (Official)
+  # Backlog MCP Server
   backlog-mcp-server:
     image: ghcr.io/nulab/backlog-mcp-server:latest
     environment:
@@ -451,7 +451,7 @@ services:
 
 #### 1. 技術的優位性
 - **MCP Protocol**: 最新AI-API連携標準の採用
-- **Official Integration**: Nulab公式ツール活用
+- **Official Integration**: 公式ツール活用
 - **Full-stack TypeScript/Go**: モダンな技術スタック
 - **Real-time AI**: リアルタイムAI分析機能
 
@@ -506,7 +506,7 @@ services:
 ### 提出時のアピールポイント
 
 #### 1. 技術選択の合理性
-「Nulab様の最新公式MCPサーバーを活用し、SlidevによるHTML5スライド生成とAI統合における最先端アプローチを採用」
+「最新公式MCPサーバーを活用し、SlidevによるHTML5スライド生成とAI統合における最先端アプローチを採用」
 
 #### 2. 実用的価値  
 「Backlogプロジェクトデータから自動的にプレゼンテーション資料を生成し、日本語音声解説付きで業務効率を大幅向上」
@@ -520,4 +520,4 @@ services:
 #### 5. 技術スタック調和
 「TypeScript(Vue 3) + Go の組み合わせで、フロントエンド・バックエンド両方の実力を demonstrate」
 
-この提案は、Nulab様の技術方向性と課題要求を満たしつつ、候補者の技術力と創造性を総合的に demonstrate する内容となっています。
+この提案は、技術方向性と課題要求を満たしつつ、候補者の技術力と創造性を総合的に demonstrate する内容となっています。

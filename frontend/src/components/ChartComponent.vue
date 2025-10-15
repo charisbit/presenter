@@ -28,7 +28,7 @@
  * - Error handling for invalid chart configurations
  * - Unique chart instance management
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 -->

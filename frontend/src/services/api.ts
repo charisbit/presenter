@@ -8,7 +8,7 @@
  * - Request/response interceptors for error handling
  * - Automatic token management and refresh
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 

@@ -625,7 +625,7 @@ func (s *TTSService) generateKokoroAudio(req models.SpeechRequest, outputPath st
 	req_http.Header.Set("Accept", "application/json")
 	
 	// Send request for TTS metadata
-	client = &http.Client{Timeout: 30 * time.Second}
+	client = &http.Client{Timeout: 600 * time.Second}
 	resp, err := client.Do(req_http)
 	if err != nil {
 		return fmt.Errorf("Kokoro TTS request failed: %w", err)

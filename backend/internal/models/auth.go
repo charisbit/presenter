@@ -35,11 +35,11 @@ type UserInfo struct {
 	RoleType     int    `json:"roleType"`     // User's role type in Backlog
 	Lang         string `json:"lang"`         // User's preferred language setting
 	MailAddress  string `json:"mailAddress"`  // User's email address
-	NulabAccount struct {
-		NulabID  string `json:"nulabId"`  // Nulab account ID
-		Name     string `json:"name"`     // Nulab account name
-		UniqueID string `json:"uniqueId"` // Unique identifier for Nulab account
-	} `json:"nulabAccount"` // Nested Nulab account information
+	Account struct {
+		AccountID string `json:"accountId"` // Account ID
+		Name      string `json:"name"`      // Account name
+		UniqueID  string `json:"uniqueId"`  // Unique identifier for account
+	} `json:"account"` // Nested account information
 }
 
 // AuthResponse represents the authentication response sent to the client.

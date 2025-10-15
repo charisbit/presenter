@@ -173,25 +173,33 @@ class NativeMLXAudioTTS:
         self.voice_mapping = {
             'en': {  # English voices
                 "female": "af_heart",
-                "male": "af_alloy",
+                "male": "am_adam",
                 "af_heart": "af_heart",
                 "af_alloy": "af_alloy",
                 "af_bella": "af_bella",
-                "af_nova": "af_nova"
+                "af_nova": "af_nova",
+                "am_adam": "am_adam"
             },
-            'ja': {  # Japanese voices (use compatible ones)
-                "female": "af_bella",  # Use more neutral voice for Japanese
-                "male": "af_alloy",
-                "af_heart": "af_bella",  # Map af_heart to compatible voice
-                "af_bella": "af_bella",
-                "af_alloy": "af_alloy"
+            'ja': {  # Japanese voices
+                "female": "jf_alpha",
+                "male": "jm_kumo",
+                "jf_alpha": "jf_alpha",
+                "jf_gongitsune": "jf_gongitsune",
+                "jf_nezumi": "jf_nezumi",
+                "jf_tebukuro": "jf_tebukuro",
+                "jm_kumo": "jm_kumo"
             },
             'zh': {  # Chinese voices
-                "female": "af_nicole",
-                "male": "af_alloy",
-                "af_heart": "af_nicole",
-                "af_nicole": "af_nicole",
-                "af_alloy": "af_alloy"
+                "female": "zf_xiaoxiao",
+                "male": "zm_yunjian",
+                "zf_xiaobei": "zf_xiaobei",
+                "zf_xiaoni": "zf_xiaoni",
+                "zf_xiaoxiao": "zf_xiaoxiao",
+                "zf_xiaoyi": "zf_xiaoyi",
+                "zm_yunjian": "zm_yunjian",
+                "zm_yunxi": "zm_yunxi",
+                "zm_yunxia": "zm_yunxia",
+                "zm_yunyang": "zm_yunyang"
             }
         }
         
@@ -201,49 +209,19 @@ class NativeMLXAudioTTS:
             logger.error("MLX-Audio Kokoro not available - cannot initialize")
     
     def _initialize_kokoro(self):
-        """Initialize MLX-Audio Kokoro TTS model with proper configuration"""
+        """Initialize MLX-Audio Kokoro model using correct loading method"""
         try:
             logger.info(f"Loading MLX-Audio Kokoro model: {self.model_name}")
             
-            # Import required classes
-            from mlx_audio.tts.models.kokoro import Model, ModelConfig
-            from huggingface_hub import hf_hub_download
-            import json
-            import mlx.core as mx
+            # Use correct loading method
+            from mlx_audio.tts.utils import load_model
             
-            # Download and load the config from Hugging Face
-            logger.info("Downloading config from Hugging Face...")
-            config_path = hf_hub_download(self.model_name, 'config.json')
-            
-            with open(config_path, 'r') as f:
-                config_dict = json.load(f)
-            
-            logger.info("✅ Config loaded successfully")
-            
-            # Create ModelConfig from the loaded dictionary
-            config = ModelConfig(**config_dict)
-            logger.info("✅ ModelConfig created successfully")
-            
-            # Create the Kokoro model with the proper config
-            self.kokoro_model = Model(config, repo_id=self.model_name)
-            
-            # Ensure model parameters are properly loaded and evaluated
-            logger.info("📥 Loading and evaluating model parameters...")
-            mx.eval(self.kokoro_model.parameters())
-            logger.info("✅ Model parameters evaluated successfully")
-            
-            # Set model to evaluation mode
-            self.kokoro_model.eval()
-            logger.info("✅ Kokoro model created successfully")
-            
-            # We don't need the pipeline, just use the model directly
-            self.kokoro_pipeline = None
+            self.kokoro_model = load_model(self.model_name)
             
             logger.info("✅ MLX-Audio Kokoro model initialized successfully")
             
         except Exception as e:
             logger.error(f"❌ Failed to initialize MLX-Audio Kokoro model: {e}")
-            logger.error(f"Error details: {str(e)}")
             self.kokoro_model = None
             self.kokoro_pipeline = None
     
@@ -257,130 +235,57 @@ class NativeMLXAudioTTS:
         return self.supported_languages.get(language, 'j')  # Default to Japanese
     
     async def synthesize(self, text: str, voice: str = "female", speed: float = 1.0, language: str = "ja") -> Tuple[np.ndarray, float]:
-        """Synthesize speech using MLX-Audio Kokoro model directly"""
-        if not MLX_AUDIO_AVAILABLE or not self.kokoro_model:
-            raise Exception("MLX-Audio not available or not initialized")
+        """Synthesize speech using MLX-Audio Kokoro model"""
+        if not self.kokoro_model:
+            raise Exception("MLX-Audio not initialized")
         
         try:
-            logger.info(f"Generating MLX-Audio Kokoro for text: '{text[:50]}...' in {language}")
+            logger.info(f"Generating MLX-Audio for text: '{text[:50]}...' in {language}")
             
             # Get language code and voice
             lang_code = self.get_lang_code(language)
             kokoro_voice = self.get_voice_for_language(language, voice)
             
-            # Use the model's generate method directly
-            logger.info(f"Using voice: {kokoro_voice}, lang_code: {lang_code}, speed: {speed}")
+            logger.info(f"Requested voice: '{voice}', mapped to: '{kokoro_voice}', lang_code: {lang_code}, speed: {speed}")
             
-            # Try a different approach - use the KokoroPipeline directly
-            try:
-                from mlx_audio.tts.models.kokoro import KokoroPipeline
-                import mlx.core as mx
-                
-                # Create pipeline for the specified language
-                pipeline = KokoroPipeline(lang_code)
-                
-                # Generate audio using pipeline
-                logger.info("🔄 Using KokoroPipeline directly for better compatibility")
-                audio_output = pipeline.generate(
-                    text=text,
-                    voice=kokoro_voice,
-                    speed=speed
-                )
-                
-                # If that fails, fall back to the model's generate method
-                if audio_output is None:
-                    raise Exception("KokoroPipeline returned None")
-                    
-            except Exception as pipeline_error:
-                logger.warning(f"⚠️ KokoroPipeline failed ({pipeline_error}), falling back to model.generate")
-                
-                # Fallback to model's generate method
-                audio_output = self.kokoro_model.generate(
-                    text=text,
-                    voice=kokoro_voice,
-                    speed=speed,
-                    lang_code=lang_code,
-                    split_pattern=r'\n+'
-                )
+            # Generate audio using model
+            audio_output = self.kokoro_model.generate(
+                text=text,
+                voice=kokoro_voice,
+                speed=speed,
+                lang_code=lang_code
+            )
             
-            # Extract audio from the generator output
+            # Process audio segments
             audio_segments = []
-            segment_count = 0
-            
             for segment in audio_output:
-                segment_audio = None
-                if hasattr(segment, 'audio'):
-                    # If it's an output object with audio attribute
-                    segment_audio = segment.audio
-                elif isinstance(segment, np.ndarray):
-                    # If it's directly numpy array
-                    segment_audio = segment
-                else:
-                    # Try to convert to numpy array
-                    segment_audio = np.array(segment)
+                segment_audio = segment.audio if hasattr(segment, 'audio') else segment
                 
-                # Convert MLX array to numpy if needed
+                # Convert to numpy array
                 if hasattr(segment_audio, 'numpy'):
                     segment_audio = segment_audio.numpy()
-                elif hasattr(segment_audio, '__array__'):
-                    segment_audio = np.asarray(segment_audio)
                 
-                # Check for NaN values and fix them
-                if np.any(np.isnan(segment_audio)):
-                    logger.warning(f"⚠️ Found NaN values in segment {segment_count}, replacing with zeros")
-                    segment_audio = np.nan_to_num(segment_audio, nan=0.0)
+                # Ensure it's a numpy array before converting
+                if not isinstance(segment_audio, np.ndarray):
+                    segment_audio = np.array(segment_audio)
                 
-                # Check for infinite values and fix them
-                if np.any(np.isinf(segment_audio)):
-                    logger.warning(f"⚠️ Found infinite values in segment {segment_count}, clamping")
-                    segment_audio = np.nan_to_num(segment_audio, posinf=1.0, neginf=-1.0)
-                
-                # Normalize audio to prevent clipping
-                if np.max(np.abs(segment_audio)) > 1.0:
-                    logger.info(f"📊 Normalizing segment {segment_count} to prevent clipping")
-                    segment_audio = segment_audio / np.max(np.abs(segment_audio))
-                
-                # Ensure float32 dtype
-                segment_audio = segment_audio.astype(np.float32)
-                
-                audio_segments.append(segment_audio)
-                segment_count += 1
-                
-                logger.info(f"📊 Segment {segment_count}: shape={segment_audio.shape}, min={np.min(segment_audio):.6f}, max={np.max(segment_audio):.6f}, mean={np.mean(segment_audio):.6f}")
+                audio_segments.append(segment_audio.astype(np.float32))
             
-            if not audio_segments:
-                raise Exception("No audio segments generated")
-            
-            # Concatenate all audio segments
+            # Combine segments
             if len(audio_segments) == 1:
                 final_audio = audio_segments[0]
             else:
                 final_audio = np.concatenate(audio_segments)
             
-            # Final validation and cleanup
-            if np.any(np.isnan(final_audio)):
-                logger.error("❌ Final audio still contains NaN values, replacing with silence")
-                final_audio = np.nan_to_num(final_audio, nan=0.0)
-            
-            if np.any(np.isinf(final_audio)):
-                logger.error("❌ Final audio contains infinite values, clamping")
-                final_audio = np.nan_to_num(final_audio, posinf=1.0, neginf=-1.0)
-            
-            # Ensure proper audio range [-1, 1]
-            if np.max(np.abs(final_audio)) > 1.0:
-                logger.info("📊 Normalizing final audio to [-1, 1] range")
-                final_audio = final_audio / np.max(np.abs(final_audio))
-            
             duration = len(final_audio) / self.sample_rate
             
-            logger.info(f"✅ Successfully generated {duration:.2f}s of MLX-Audio Kokoro speech with {segment_count} segments")
-            logger.info(f"📊 Final audio: shape={final_audio.shape}, min={np.min(final_audio):.6f}, max={np.max(final_audio):.6f}, mean={np.mean(final_audio):.6f}")
+            logger.info(f"✅ Generated {duration:.2f}s audio")
             
             return final_audio, duration
             
         except Exception as e:
-            logger.error(f"❌ MLX-Audio Kokoro synthesis failed: {e}")
-            raise Exception(f"MLX-Audio synthesis failed: {str(e)}")
+            logger.error(f"❌ MLX-Audio synthesis failed: {e}")
+            raise
 
 def generate_cache_key(text: str, voice: str, speed: float, language: str) -> str:
     """Generate cache key for audio file"""

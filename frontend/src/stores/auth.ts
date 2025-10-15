@@ -11,7 +11,7 @@
  * The store integrates with Backlog's OAuth API to provide seamless
  * authentication for the Intelligent Presenter application.
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 

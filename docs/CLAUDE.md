@@ -1,121 +1,53 @@
-# Nulab 技术面试信息汇总
+# 技术挑战信息汇总
 
-## 基本信息
-- 候选人: 盛偉 (Sei I)
-- 职位: 【Backlog】软件工程师（生成AI）
-- 选择题目: 题目②「自由创意使用Backlog API开发应用程序」
-- 使用技术: TypeScript + Go
-- 截止日期: 8月17日（星期日）
-- 评估期间: 提交后3个工作日
-
-## 题目要求
-
-### 技术要求
+## 技术要求
 - 编程语言: 推荐 Java/Kotlin/Scala/Python/Go
 - 特别要求: TypeScript 或 Go
 - 认证: 必须使用 OAuth 2.0（不可使用API密钥）
 - 部署: 需要可在本地运行
 - 代码仓库: 使用Backlog的Git仓库
 
-### 评估标准
-1. 是否注重可视性和可读性
-2. 是否注重可维护性和可扩展性  
-3. 是否注重测试
-4. 是否注重安全性
+## 选择的方向
 
-### 期望的"实力"展示
-- 假设将在Nulab长期进行服务开发和运维
-- 不是一次性代码，而是能体现实力的内容
-- 如有偷工减料的地方，需明确说明理由
+### 改进「Backlog AI助手」
 
-## 公司信息
-
-### Nulab概况
-- 成立时间: 2004年3月
-- 总部: 福冈县福冈市
-- 上市: 东京证券交易所Growth市场（5033）
-- 员工: 分布在全国24个都道府县（全员远程工作）
-
-### 主要服务
-- Backlog: 项目和任务管理（145万用户）
-- Cacoo: 在线绘图工具（300万用户）
-- Nulab Pass: 安全对策工具
-
-### 技术栈
-- Backlog: Scala (Play Framework)
-- Cacoo: Go
-- Typetalk: Scala (Play Framework)  
-- Nulab Apps: Java (Spring), Kotlin
-- 后台办公: Python, Google Apps Script, Scala
-
-### 企业文化和价值观
-- 品牌理念: 在世界各地创造「能和这个团队一起工作真是太好了」的感受
-- 行动方针「Nuice Ways Ver 2.0」:
-  - TRY FIRST: 不断学习和实践，不拘泥于常识勇于挑战
-  - LOVE DIFFERENCES: 接纳多样性，转化为力量
-  - GOAL ORIENTED: 共享目标，共同朝着目的地前进
-
-## 最新AI举措
-
-### Backlog AI助手（2025年7月开始β版）
-- 通过聊天式UI读取Backlog数据
-- 项目状况整理和可视化
-- 自动生成进度报告和文档
-- 基于对话的实务支援
-- 提前察知风险和瓶颈
-
-#### 功能特色
-- 项目信息积累和状况整理
-- 自动生成进度报告和文档  
-- 根据业务需求提供对话式支援
-- 预测风险和瓶颈
-
-## 面试结果
-
-### 一轮面试企业反馈
-- 性格开朗，面试时面带微笑
-- 积极参与OSS活动，与工程师文化契合
-- AI相关经验与招聘岗位高度匹配
-- 对技术题目的输出充满期待
-
-### 面试中的问题
-- 转职动机
-- 对团队合作的思考
-- 从其他成员学到的经验
-- 平时工作中AI的使用情况
-- 参与开源项目的契机
-- 今后的职业规划
-
-## 提案创意
-
-### 选择的方向
-改进「Backlog AI助手」
-
-Intelligent Presenter for HTML Slides
+**Intelligent Presenter for HTML Slides**
 HTMLスライドのインテリジェントプレゼンター
 HTML 幻灯片的智能演示者
 
-Intelligent Presenter for HTML Slides
-MCP Client 和 MCP Servers 之间采用异步流式输入输出。
-・Presentation MCP Client
-　・用 TypeScript 实现一个浏览器端的。
-　・用 Golang 实现一个提供 REST API 的。
-・Backlog MCP Server
-・Speech MCP Server
-　采用 RealtimeTTS 。
+### 系统架构设计
 
-Presentation MCP Client
-各个模块之间采用异步流式进行交互。
-・Markdown Slide Generator
-　根据从 Backlog MCP Server 获取的信息（调用 LLM API）生成一页用 Markdown + Mermaid + Chart.js 描述的 Slide 。
-・Markdown Slide Narrator
-　根据用 Markdown + Mermaid + Chart.js 描述的 Slide （调用 LLM API）生成口头解说用纯文本。
-・HTML Slide Compiler
-　（调用 Slidev TypeScript API）根据用 Markdown + Mermaid + Chart.js 描述的 Slide 生成用 HTML 描述的 Slide 。
-・HTML Slide Renderer
-　（参考 Slidev）把用 HTML 描述的 Slide 在浏览器前端展示出来。
+**MCP Client 和 MCP Servers 之间采用异步流式输入输出**
 
-#### backlog-mcp-server 生成单页 Slide 候选主题
+#### Presentation MCP Client
+- **TypeScript 实现**：浏览器端用户界面
+- **Golang 实现**：提供 REST API 的后端服务
+
+#### MCP Servers
+- **Backlog MCP Server**：Backlog 数据获取服务
+- **Speech MCP Server**：采用 RealtimeTTS 的语音合成服务
+
+### Presentation MCP Client 模块设计
+
+各个模块之间采用异步流式进行交互：
+
+#### Markdown Slide Generator
+- 根据从 Backlog MCP Server 获取的信息（调用 LLM API）
+- 生成一页用 Markdown + Mermaid + Chart.js 描述的 Slide
+
+#### Markdown Slide Narrator
+- 根据用 Markdown + Mermaid + Chart.js 描述的 Slide（调用 LLM API）
+- 生成口头解说用纯文本
+
+#### HTML Slide Compiler
+- 调用 Slidev TypeScript API
+- 根据用 Markdown + Mermaid + Chart.js 描述的 Slide 生成用 HTML 描述的 Slide
+
+#### HTML Slide Renderer
+- 参考 Slidev 实现
+- 把用 HTML 描述的 Slide 在浏览器前端展示出来
+
+### backlog-mcp-server 生成单页 Slide 候选主题
 
 1. **项目概况与基本信息**
 
@@ -168,7 +100,7 @@ Presentation MCP Client
 
    * 预测风险与项目健康度分析
 
-#### 推荐的多页 Slides 组织顺序示例
+### 推荐的多页 Slides 组织顺序示例
 
 | 页码 | 主题         | 说明              |
 | -- | ---------- | --------------- |
@@ -183,44 +115,44 @@ Presentation MCP Client
 | 9  | 项目进度预测分析 | 预测风险与项目健康度分析     |
 | 10 | 总结与下一步计划   | 汇报总结，未来规划       |
 
-### 核心功能特性
+## 核心功能特性
 
-#### 1. **智能幻灯片生成**
+### 1. **智能幻灯片生成**
    - 基于 Backlog 项目数据自动生成 10 种主题幻灯片
    - Markdown + Mermaid + Chart.js 多模态内容组合
    - LLM 驱动的内容智能化生成
 
-#### 2. **实时语音解说**
+### 2. **实时语音解说**
    - 日语 TTS 自动生成口头解说
    - 智能文本分句和语音合成
    - 流式音频播放支持
 
-#### 3. **异步流式处理**
+### 3. **异步流式处理**
    - MCP 协议的实时数据获取
    - WebSocket 流式幻灯片推送
    - 渐进式内容生成和展示
 
-#### 4. **现代化演示体验**
+### 4. **现代化演示体验**
    - Slidev 驱动的 HTML5 幻灯片
    - Vue 3 组件化交互界面
    - 响应式设计和动画效果
 
-#### 5. **项目洞察可视化**
+### 5. **项目洞察可视化**
    - 项目健康度综合分析
    - 风险预警和瓶颈识别  
    - 团队协作状态展示
    - 预测性项目管理支援
 
-### 技术架构方案
+## 技术架构方案
 
-#### 核心系统架构
+### 核心系统架构
 - **Presentation MCP Client**: 双端实现架构
   - **TypeScript 前端**: 浏览器端 UI 和交互
   - **Go 后端**: MCP 网关 + REST API 服务
 - **Backlog MCP Server**: 使用官方 nulab/backlog-mcp-server
 - **Speech MCP Server**: 基于 Go TTS 库实现语音合成
 
-#### MCP 交互设计
+### MCP 交互设计
 ```
 TypeScript Frontend ←→ Go Backend ←→ MCP Servers
      (REST API)        (MCP Protocol)
@@ -231,7 +163,7 @@ TypeScript Frontend ←→ Go Backend ←→ MCP Servers
 - Go 后端作为统一的 MCP 网关，处理所有 MCP 协议复杂性
 - 避免前端直接访问 MCP Server，保持架构一致性
 
-#### 主要组件及技术分配
+### 主要组件及技术分配
 
 | 组件 | 实现语言 | 职责 | 交互方式 |
 |------|----------|------|----------|
@@ -240,14 +172,14 @@ TypeScript Frontend ←→ Go Backend ←→ MCP Servers
 | **HTML Slide Compiler** | 🟨 TypeScript | Slidev API 调用 | REST API ← Go |
 | **HTML Slide Renderer** | 🟨 TypeScript | 前端渲染 + 用户交互 | WebSocket ← Go |
 
-#### 数据流架构
+### 数据流架构
 ```
 Backlog Data → Go Backend (聚合+生成) → TypeScript Frontend (编译+渲染)
      ↓              ↓                          ↓
 MCP Protocol    LLM API + TTS              Slidev + Vue 3
 ```
 
-#### 技术栈详细配置
+### 技术栈详细配置
 - **前端**: TypeScript + Vue 3 + Slidev + Chart.js + Mermaid
 - **后端**: Go + Gin + WebSocket + MCP Client Libraries
 - **认证**: OAuth 2.0 + JWT (Backlog API 要求)
@@ -255,24 +187,16 @@ MCP Protocol    LLM API + TTS              Slidev + Vue 3
 - **部署**: Docker + Docker Compose
 - **协议**: REST API + WebSocket + MCP JSON-RPC 2.0
 
-## 技术题目进展状况
+## MVP 实现计划
 
-### Backlog项目信息
-- 项目名: nulab-exam
-- 已收到邀请邮件
-- 开发部长和Backlog开发团队成员参与
-- 提及对象: @Masashi Kotani @Kana Miyoshi
-
-### MVP 实现计划
-
-#### 第一阶段 (天数 1-3): 基础架构搭建
+### 第一阶段 (天数 1-3): 基础架构搭建
 **优先级 P0**
 - [ ] Go 后端基础框架 (Gin + WebSocket)
 - [ ] Backlog MCP Client 集成
 - [ ] TypeScript 前端基础框架 (Vue 3 + Vite)
 - [ ] OAuth 2.0 认证实现
 
-#### 第二阶段 (天数 4-6): 核心功能实现
+### 第二阶段 (天数 4-6): 核心功能实现
 **优先级 P0**
 - [ ] Markdown Slide Generator (Go)
   - [ ] 项目概况主题实现
@@ -285,21 +209,21 @@ MCP Protocol    LLM API + TTS              Slidev + Vue 3
   - [ ] 基础渲染功能
   - [ ] 幻灯片切换逻辑
 
-#### 第三阶段 (天数 7-8): 语音和高级功能
+### 第三阶段 (天数 7-8): 语音和高级功能
 **优先级 P1**
 - [ ] Speech MCP Server (Go TTS)
 - [ ] Markdown Slide Narrator (Go)
 - [ ] 日语文本分句处理
 - [ ] 完整的流式处理管道
 
-#### 第四阶段 (天数 9-10): 测试和优化
+### 第四阶段 (天数 9-10): 测试和优化
 **优先级 P1**
 - [ ] 单元测试覆盖
 - [ ] 集成测试
 - [ ] 性能优化
 - [ ] 文档完善
 
-### 技术风险评估
+## 技术风险评估
 
 | 风险项 | 概率 | 影响 | 缓解策略 |
 |--------|------|------|----------|
@@ -308,7 +232,7 @@ MCP Protocol    LLM API + TTS              Slidev + Vue 3
 | MCP 协议实现 | 低 | 高 | 参考官方 backlog-mcp-server |
 | OAuth 2.0 集成 | 低 | 中 | 使用成熟的 Go OAuth 库 |
 
-### 下一步行动
+## 下一步行动
 1. ✅ 技术架构设计完成
 2. 🔄 在 Backlog 项目中共享最新进展
 3. 🔄 开始第一阶段开发 (基础架构)
@@ -414,27 +338,6 @@ Response: audio/wav stream
 - 用户活动、Git历史  
 - Wiki内容、文件、里程碑
 - 时间记录、自定义字段
-
-### Nulab相关资料
-- 财报说明资料: https://nulab.com/ja/ir/presentation/
-- 技术题目博客: https://note.com/tatsuru_nulab/n/nbaed7f026683
-- AI助手发布: https://nulab.com/ja/press/pr-2506-nulab-ai-by-backlog/
-
-## 注意事项
-
-### 应该避免的事项
-- 简单复制现有AI助手功能
-- 使用API密钥认证
-- 轻视安全性
-- 测试不足
-
-### 应该重视的事项
-- 提供实用价值
-- 代码质量（可读性和可维护性）
-- 合适的架构设计
-- 安全性和认证的实现
-- 全面的测试覆盖
-- 清晰的文档
 
 ## 部署和测试方案
 
@@ -564,6 +467,13 @@ docker-compose logs -f backend
 
 ### 期限管理
 - 开发期间: ~8月17日（约10天）
-- 夏季休假: 8月9日-17日（Nulab）
-- 评估期间: 提交后3个工作日
-- 二轮面试: 评估通过后安排
+- 夏季休假: 8月9日-17日
+
+## 提交信息格式要求
+
+### Git 提交信息规范
+- 不要包含 "Generated with" 信息
+- 不要包含 "Co-Author" 信息
+- 使用简洁的描述性标题
+- 使用项目符号列表描述具体修改内容
+- 保持专业和技术性，避免不必要的元信息

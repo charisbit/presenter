@@ -7,7 +7,7 @@
 
 ## 🎯 项目概述
 
-**Intelligent Presenter** 是为 Nulab Backlog 平台设计的智能演示系统，能够：
+**Intelligent Presenter** 是为 Backlog 平台设计的智能演示系统，能够：
 
 - 📊 **自动数据获取**: 通过 MCP 协议从 Backlog 获取项目数据
 - 🤖 **AI 内容生成**: 使用 LLM 自动生成幻灯片内容和解说词
@@ -209,7 +209,6 @@ npm run test:e2e
 
 ## 📚 文档
 
-- [技术挑战总结](./nulab-tech-challenge-summary.md)
 - [CLAUDE 开发记录](./CLAUDE.md)
 - [部署指南](./deployment.md)
 - [开发指南](./development.md)
@@ -226,11 +225,6 @@ npm run test:e2e
 
 MIT License - 详见 [LICENSE](LICENSE) 文件
 
-## 🏢 关于 Nulab
-
-本项目是为 [Nulab Inc.](https://nulab.com/) 技术面试开发的演示项目，展示了对 Backlog 平台和现代 Web 技术的深度集成。
-
 ---
 
-**盛偉 (Sei I)** - Nulab 技术面试项目  
-📧 联系方式: [your-email@example.com]
+📧 联系方式: [saintway@dtype.info]

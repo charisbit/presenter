@@ -5,7 +5,7 @@
  * all application routes. It includes protection for authenticated and guest-only
  * routes, automatic redirects, and proper route parameter handling.
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 

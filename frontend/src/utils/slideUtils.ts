@@ -8,7 +8,7 @@
  * These utilities are used throughout the slide generation and presentation
  * pipeline to ensure proper rendering of complex content types.
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 

@@ -38,7 +38,7 @@
 
     <!-- Application footer with copyright -->
     <footer class="app-footer">
-      <p>&copy; 2024 Intelligent Presenter - Nulab Technical Challenge</p>
+      <p>&copy; 2024 Intelligent Presenter - Technical Challenge</p>
     </footer>
   </div>
 </template>
@@ -56,7 +56,7 @@
  * The component integrates with Pinia stores for state management and
  * Vue Router for navigation between different application views.
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 -->

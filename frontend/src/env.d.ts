@@ -10,7 +10,7 @@
  * These declarations ensure type safety when working with environment variables
  * and importing Vue components in the TypeScript codebase.
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 

@@ -5,7 +5,7 @@
  * used throughout the OAuth 2.0 authentication flow with Backlog. These types ensure
  * type safety when handling user information, authentication tokens, and OAuth responses.
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 
@@ -21,10 +21,10 @@
  * @property {number} roleType - User role type identifier (1=Admin, 2=User, etc.)
  * @property {string} lang - User's preferred language code (e.g., 'ja', 'en')
  * @property {string} mailAddress - User's email address
- * @property {Object} nulabAccount - Nulab account information
- * @property {string} nulabAccount.nulabId - Unique Nulab account identifier
- * @property {string} nulabAccount.name - Nulab account display name
- * @property {string} nulabAccount.uniqueId - Unique Nulab account ID
+ * @property {Object} account - Account information
+ * @property {string} account.accountId - Unique account identifier
+ * @property {string} account.name - Account display name
+ * @property {string} account.uniqueId - Unique account ID
  * 
  * @example
  * ```typescript
@@ -35,8 +35,8 @@
  *   roleType: 2,
  *   lang: "ja",
  *   mailAddress: "developer@example.com",
- *   nulabAccount: {
- *     nulabId: "nulab123",
+ *   account: {
+ *     accountId: "account123",
  *     name: "John Developer",
  *     uniqueId: "unique456"
  *   }
@@ -50,8 +50,8 @@ export interface UserInfo {
   roleType: number
   lang: string
   mailAddress: string
-  nulabAccount: {
-    nulabId: string
+  account: {
+    accountId: string
     name: string
     uniqueId: string
   }

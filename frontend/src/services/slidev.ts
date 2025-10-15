@@ -7,7 +7,7 @@
  * - Converting Chart.js configurations
  * - Native Slidev markdown to HTML conversion
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 3.0.0
  */
 

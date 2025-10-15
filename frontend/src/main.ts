@@ -11,7 +11,7 @@
  * with Backlog projects to create automated slide presentations with AI-powered content
  * generation and text-to-speech capabilities.
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 

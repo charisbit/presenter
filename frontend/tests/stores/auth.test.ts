@@ -76,8 +76,8 @@ describe('Auth Store', () => {
         roleType: 2,
         lang: 'ja',
         mailAddress: 'test@example.com',
-        nulabAccount: {
-          nulabId: 'nulab123',
+        account: {
+          accountId: 'account123',
           name: 'Test User',
           uniqueId: 'unique456'
         }
@@ -133,8 +133,8 @@ describe('Auth Store', () => {
       roleType: 2,
       lang: 'ja',
       mailAddress: 'stored@example.com',
-      nulabAccount: {
-        nulabId: 'nulab456',
+      account: {
+        accountId: 'account456',
         name: 'Stored User',
         uniqueId: 'unique789'
       }
@@ -225,8 +225,8 @@ describe('Auth Store', () => {
         roleType: 2,
         lang: 'ja',
         mailAddress: 'user@example.com',
-        nulabAccount: {
-          nulabId: 'nulab123',
+        account: {
+          accountId: 'account123',
           name: 'User',
           uniqueId: 'unique123'
         }

@@ -5,7 +5,7 @@
  * throughout the application. It serves as a central hub for common data
  * structures and re-exports specialized types from other modules.
  * 
- * @author Nulab Technical Challenge
+ * @author Technical Challenge
  * @version 1.0.0
  */
 
